@@ -1,0 +1,2365 @@
+<!DOCTYPE html>
+<html lang="en" style="overflow-x:hidden;max-width:100vw;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>50K Challenge -- 100 Day Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   50K CHALLENGE -- DESIGN TOKENS (CSS Variables)
+   Single source of truth for all colours & spacing.
+   Night mode = :root, Day mode = body.day-mode
+   ═══════════════════════════════════════════════════ */
+:root {
+  --bg:        #070A0F;
+  --bg2:       #0A0F1C;
+  --bg3:       #0D1520;
+  --bg4:       #0A1520;
+  --border:    #1A2540;
+  --border2:   #243040;
+  --text:      #E4EAF2;
+  --text2:     #C8D0DC;
+  --muted:     #4A6278;
+  --muted2:    #3A5070;
+  --gold:      #F5A623;
+  --fire:      #FF5F1F;
+  --cyan:      #00D4FF;
+  --green:     #2ECC8A;
+  --red:       #E63946;
+  --purple:    #8B5CF6;
+  --label-col: #F5A623;
+  --input-bg:  #0A1520;
+  --input-bdr: #243040;
+  --input-txt: #E4EAF2;
+  --rc-bg:     #0D1520;
+  --rc-bdr:    #1A2E40;
+  --sc-bg:     #0D1520;
+  --hero-bg:   #0D1520;
+  --hdr-bg:    #0A0F1C;
+  --gbar-bg:   #1C2A38;
+  --dot-future:#0F1923;
+  --tbar-bg:   #1A2535;
+  --tbar-bdr:  #2A3A50;
+  --tnum-col:  #F5A623;
+  --tbar-lbl:  #7A8FA8;
+  --vb-bg:     #070A0F;
+  --vb-bdr:    #243040;
+  --vb-txt:    #C8D0DC;
+  --vb-chk:    #3A5070;
+  --toast-bg:  #0D1828;
+  --select-bg: #0A1520;
+  --modal-bg:  #0A0F1C;
+  --ring-track:#1A2A38;
+}
+body.day-mode {
+  --bg:        #F4F6F9;
+  --bg2:       #FFFFFF;
+  --bg3:       #FFFFFF;
+  --bg4:       #FFFFFF;
+  --border:    #C8D3E2;
+  --border2:   #B8C6D8;
+  --text:      #1A2540;
+  --text2:     #2A3550;
+  --muted:     #5A6478;
+  --muted2:    #5A6880;
+  --gold:      #CC7A00;
+  --fire:      #CC4400;
+  --label-col: #1A2A44;
+  --input-bg:  #FFFFFF;
+  --input-bdr: #B8C6D8;
+  --input-txt: #1A2540;
+  --rc-bg:     #FFFFFF;
+  --rc-bdr:    #C8D3E2;
+  --sc-bg:     #FFFFFF;
+  --hero-bg:   #FFFFFF;
+  --hdr-bg:    #FFFFFF;
+  --gbar-bg:   #D8DEE8;
+  --dot-future:#D0D8E8;
+  --tbar-bg:   #FFFFFF;
+  --tbar-bdr:  #D0DAE8;
+  --tnum-col:  #1A1A2E;
+  --tbar-lbl:  #5A6880;
+  --vb-bg:     #EEF3FA;
+  --vb-bdr:    #C0D0E4;
+  --vb-txt:    #1A2A44;
+  --vb-chk:    #7A9ABB;
+  --toast-bg:  #1A2540;
+  --select-bg: #FFFFFF;
+  --modal-bg:  #FFFFFF;
+  --ring-track:#D0D8E8;
+}
+
+/* ── RESET ── */
+* { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; max-width:100%; }
+html, body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+  font-size:15px;
+  min-height:100vh;
+  transition:background .25s, color .25s;
+}
+
+/* ── HEADER ── */
+.hdr {
+  position:sticky; top:0; z-index:100;
+  background:var(--hdr-bg); border-bottom:1px solid var(--border);
+  padding:10px 14px 0;
+  overflow:hidden; /* fix iOS scroll bleed */
+}
+.hdr-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.brand { display:flex; align-items:center; gap:8px; min-width:0; flex:1; }
+.brand-icon { font-size:26px; flex-shrink:0; cursor:pointer; }
+.brand-name {
+  font-family:'Bebas Neue',Impact,Arial,sans-serif;
+  font-size:20px; letter-spacing:1px; color:var(--text);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.brand-sub {
+  font-size:12px; color:var(--text); letter-spacing:0.5px; font-weight:600;
+  cursor:pointer; text-decoration:underline dotted; text-underline-offset:3px;
+}
+/* Day nav */
+.day-nav {
+  display:flex; align-items:center;
+  background:#111D2A; border:1px solid #1E2E3E; border-radius:7px;
+  padding:3px 6px; gap:2px; flex-shrink:0;
+}
+body.day-mode .day-nav { background:#E8EFF8; border-color:#C0CCE0; }
+.day-nav-arrow {
+  background:none; border:none; font-size:17px; color:var(--gold);
+  padding:3px 8px; border-radius:4px; cursor:pointer; line-height:1;
+}
+.day-nav-arrow:disabled { opacity:0.25; cursor:not-allowed; }
+.day-lbl {
+  font-family:'Bebas Neue',Impact,Arial,sans-serif;
+  font-size:17px; color:var(--gold);
+  letter-spacing:1px; padding:0 4px; white-space:nowrap; min-width:64px; text-align:center;
+}
+/* Stats bar */
+.hstats { display:flex; gap:0; width:100%; justify-content:space-between; }
+.hs { text-align:center; flex:1; }
+.hs-v {
+  font-family:'Bebas Neue',Impact,Arial,sans-serif;
+  font-size:22px; color:var(--text); line-height:1; display:block;
+}
+.hs-l {
+  font-family:'JetBrains Mono','Courier New',monospace;
+  font-size:11px; letter-spacing:1px; color:var(--muted);
+  text-transform:uppercase; display:block;
+}
+/* Global progress bar */
+.gbar { height:3px; background:var(--gbar-bg); }
+.gbar-f { height:100%; background:linear-gradient(90deg,#FF5F1F,#F5A623,#2ECC8A); min-width:2px; transition:width .8s ease; }
+/* Action bar */
+.action-bar {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:3px 8px; background:var(--bg); gap:4px;
+}
+.action-bar-btn {
+  font-family:'JetBrains Mono','Courier New',monospace;
+  font-size:10px; letter-spacing:0.5px; text-transform:uppercase;
+  padding:5px 8px; border-radius:4px; cursor:pointer; white-space:nowrap; flex:1;
+  border:1px solid; background:rgba(0,0,0,0);
+  transition:opacity .15s;
+}
+.action-bar-btn:active { opacity:.7; }
+.ab-saved { color:var(--muted); border-color:transparent; cursor:default; font-size:10px; flex:0.7; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:80px; }
+.ab-today  { color:#FF5F1F; border-color:rgba(255,95,31,.3);  background:rgba(255,95,31,.15); }
+.ab-theme  { color:#FFBE0B; border-color:rgba(255,190,11,.3); background:rgba(255,190,11,.1); }
+.ab-logs   { color:#00D4FF; border-color:rgba(0,212,255,.3);  background:rgba(0,212,255,.1); }
+.ab-set    { color:#8B5CF6; border-color:rgba(139,92,246,.3); background:rgba(139,92,246,.1); }
+
+/* ── MAIN ── */
+.main { background:var(--bg); padding:12px 12px 80px; }
+
+/* ── HERO ── */
+.hero {
+  background:var(--hero-bg); border:1px solid var(--rc-bdr);
+  border-radius:12px; padding:14px; margin-bottom:12px;
+  display:flex; flex-direction:column; gap:8px;
+}
+.day-eyebrow {
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:2px;
+}
+.day-num-big {
+  line-height:1; font-family:'Bebas Neue',Impact,Arial,sans-serif;
+  font-size:52px; color:#FF5F1F; letter-spacing:1px;
+}
+body.day-mode .day-num-big { color:#CC4400; }
+.day-date-str { font-size:12px; color:var(--muted); margin-top:4px; white-space:nowrap; }
+
+/* ring */
+.hs2-l { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; }
+.hs2-v { font-family:'Bebas Neue',Impact,Arial,sans-serif; font-size:17px; color:var(--cyan); line-height:1.1; }
+.hs2-v.gold { color:var(--gold); }
+
+/* ── SECTION LABEL ── */
+.slbl {
+  font-family:'JetBrains Mono',monospace; font-size:12px;
+  letter-spacing:3px; color:var(--muted2); text-transform:uppercase;
+  margin:16px 0 8px; display:flex; align-items:center; gap:8px;
+}
+.slbl::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── RITUAL CARD ── */
+.rc {
+  background:var(--rc-bg); border:1px solid var(--rc-bdr);
+  border-radius:10px; margin-bottom:8px; overflow:hidden;
+  transition:background .25s, border-color .25s;
+}
+.rc-hdr {
+  display:flex; align-items:center; gap:10px;
+  padding:11px 13px; cursor:pointer; background:var(--rc-bg);
+  user-select:none; -webkit-user-select:none;
+}
+.rc-ico { font-size:26px; flex-shrink:0; }
+.rc-meta { flex:1; min-width:0; }
+.rc-title {
+  font-family:'Bebas Neue',Impact,Arial,sans-serif;
+  font-size:16px; letter-spacing:1px; color:var(--text);
+}
+.rc-sub {
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  color:var(--muted2); margin-top:2px;
+}
+.rc-r { display:flex; align-items:center; gap:6px; flex-shrink:0; margin-left:8px; }
+.arr { color:var(--muted2); font-size:10px; transition:transform .2s; }
+.rc.open .arr { transform:rotate(180deg); }
+.rc.done .arr { transform:rotate(180deg); }
+.rc-body { display:none; padding:14px; background:var(--rc-bg); }
+.rc.open .rc-body { display:block; }
+.rc.done .rc-body { display:block; }
+.rc.done.collapsed .rc-body { display:none; }
+.rc.done .rc-hdr { background:rgba(46,204,138,.08); }
+.rc.done {
+  border-color:#2ECC8A !important;
+  box-shadow:0 0 0 1.5px #2ECC8A, 0 0 18px rgba(46,204,138,.22) !important;
+  background:rgba(46,204,138,.05) !important;
+}
+body.day-mode .rc.done {
+  border-color:#17A86A !important;
+  box-shadow:0 0 0 1.5px #17A86A, 0 0 14px rgba(23,168,106,.16) !important;
+  background:rgba(23,168,106,.06) !important;
+}
+
+/* tags */
+.tag {
+  display:inline-block; font-family:'JetBrains Mono',monospace;
+  font-size:9px; letter-spacing:1px; text-transform:uppercase;
+  padding:2px 6px; border-radius:4px; border:1px solid;
+  white-space:nowrap; flex-shrink:0;
+}
+.tag-m { background:rgba(255,95,31,.12); color:#FF5F1F; border-color:rgba(255,95,31,.3); }
+.tag-o { background:rgba(255,200,0,.1); color:#FFC800; border-color:rgba(255,200,0,.25); }
+body.day-mode .tag { background:rgba(200,100,0,.1); color:#A05000; border-color:rgba(200,100,0,.25); }
+
+/* card accents */
+.ca .rc-hdr { border-left:3px solid #F5A623; }
+.cb .rc-hdr { border-left:3px solid #2ECC8A; }
+.cc .rc-hdr { border-left:3px solid #00D4FF; }
+.cd .rc-hdr { border-left:3px solid #FF5F1F; }
+.cm .rc-hdr { border-left:3px solid #8B5CF6; }
+.co .rc-hdr { border-left:3px solid #F5A623; }
+.cn .rc-hdr { border-left:3px solid #00D4FF; }
+.ca .rc-title { color:#F5A623; }
+.cb .rc-title { color:#2ECC8A; }
+.cc .rc-title { color:#00D4FF; }
+.cd .rc-title { color:#FF5F1F; }
+.cm .rc-title { color:#8B5CF6; }
+.co .rc-title { color:#F5A623; }
+.cn .rc-title { color:#00D4FF; }
+.ca  { background:rgba(245,166,35,.04); }
+.cb  { background:rgba(46,204,138,.04); }
+.cc  { background:rgba(0,212,255,.04); }
+.cd  { background:rgba(255,95,31,.04); }
+body.day-mode .rc-title { color:#1A3050 !important; }
+
+/* done mark button */
+.sbtn {
+  width:100%; padding:14px; border-radius:8px; border:none; cursor:pointer;
+  font-family:'Bebas Neue',Impact,Arial,sans-serif; font-size:18px; letter-spacing:1px;
+  margin-top:10px; color:#fff; transition:opacity .2s, transform .1s;
+  background:linear-gradient(135deg, #7B2FBE 0%, #9D44E8 50%, #6A1FA8 100%);
+  box-shadow:0 4px 16px rgba(123,47,190,.5), 0 1px 0 rgba(255,255,255,.1) inset;
+  border:1px solid rgba(157,68,232,.4);
+}
+.sbtn.undone-btn {
+  background:linear-gradient(135deg, #C0392B 0%, #E74C3C 50%, #A93226 100%) !important;
+  border:1px solid rgba(231,76,60,.4) !important;
+  box-shadow:0 4px 16px rgba(192,57,43,.5), 0 1px 0 rgba(255,255,255,.1) inset !important;
+  color:#fff !important;
+}
+.sbtn:active { opacity:.85; transform:scale(.99); }
+
+/* ── INPUTS ── */
+label {
+  display:block;
+  font-family:'JetBrains Mono','Courier New',monospace;
+  font-size:12px; letter-spacing:1.5px; color:var(--label-col);
+  text-transform:uppercase; margin-bottom:5px; font-weight:700;
+}
+.fl { margin-bottom:10px; padding-top:2px; }
+.fi, .fta, .fsel {
+  width:100%; background:var(--input-bg); border:1px solid var(--input-bdr);
+  border-radius:6px; color:var(--input-txt);
+  font-family:'DM Sans',-apple-system,sans-serif;
+  font-size:13px; padding:8px 11px;
+  transition:border-color .2s; -webkit-appearance:none;
+  -webkit-text-fill-color:var(--input-txt);
+}
+.fi:focus, .fta:focus { outline:none; border-color:var(--gold); }
+.fi::placeholder, .fta::placeholder { color:var(--muted); }
+.fta { min-height:65px; resize:vertical; line-height:1.55; }
+.fsel { background:var(--select-bg); }
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+@media(max-width:380px){ .g3 { grid-template-columns:1fr 1fr; } }
+
+/* ── TIMER -- horizontal single-row layout ── */
+.trow { margin-bottom:10px; }
+
+/* Outer card: white/light bg, full-width, single row */
+.tbar {
+  background:var(--tbar-bg);
+  border:1px solid var(--tbar-bdr);
+  border-radius:10px;
+  padding:10px 14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+/* Big time display on the left */
+.tnum {
+  font-family:'JetBrains Mono','Courier New',monospace;
+  font-size:38px; color:var(--tnum-col) !important;
+  letter-spacing:3px; line-height:1; font-weight:800;
+  flex-shrink:0; white-space:nowrap; min-width:112px;
+}
+.tnum.trun  { color:#2ECC8A !important; }
+.tnum.tdone { color:#F5A623 !important; }
+
+/* Middle: label + progress bar, grows to fill space */
+.tbars {
+  flex:1; min-width:0; display:flex; flex-direction:column; gap:5px;
+}
+.tbar-lbl {
+  font-size:10px; color:var(--tbar-lbl);
+  letter-spacing:1px; font-weight:500; text-transform:uppercase;
+  white-space:nowrap;
+}
+.tprog   { height:5px; background:var(--gbar-bg); border-radius:3px; overflow:hidden; }
+.tprog-f { height:100%; background:linear-gradient(90deg,#FF5F1F,#F5A623); border-radius:3px; transition:width .5s; }
+
+/* Right: Start / Stop / Reset buttons in a row */
+.tbtns {
+  display:flex; gap:6px; flex-shrink:0; align-items:center;
+}
+.tbtn {
+  padding:7px 13px; border-radius:6px; border:none; cursor:pointer;
+  font-family:'Bebas Neue',Impact,Arial,sans-serif; font-size:14px; letter-spacing:1px;
+  transition:opacity .15s; white-space:nowrap; line-height:1;
+  display:flex; align-items:center; gap:4px;
+}
+.tbtn:active { opacity:.7; }
+.ts    { background:#2ECC8A !important; color:#fff !important; box-shadow:0 2px 8px rgba(46,204,138,.35); }
+.tp    { background:#FF3B5C !important; color:#fff !important; box-shadow:0 2px 8px rgba(255,59,92,.35); }
+.tbtn-r { background:var(--bg2); color:var(--muted); border:1px solid var(--border2); font-size:16px; padding:6px 10px; }
+.tbtn-r:focus { outline:none; }
+
+/* ── CHECKLIST ── */
+.clist { display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+.ci {
+  display:flex; align-items:flex-start; gap:10px;
+  padding:9px 12px; border-radius:7px;
+  background:var(--bg4); border:1px solid var(--border2);
+  cursor:pointer; transition:background .15s;
+}
+.ci:active { background:rgba(46,204,138,.08); }
+.ci-box {
+  flex-shrink:0; width:20px; height:20px; margin-top:1px;
+  border:1.5px solid var(--muted); border-radius:4px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; color:#2ECC8A; transition:all .2s;
+  font-style:normal;
+}
+.ci.ck .ci-box { background:#2ECC8A; border-color:#2ECC8A; color:#fff; }
+.ci-ic { font-size:16px; flex-shrink:0; margin-top:1px; }
+.ci-t { font-size:13px; color:var(--text2); line-height:1.5; }
+
+/* ── PROGRESS MAP ── */
+.dgrid {
+  display:grid; grid-template-columns:repeat(10,1fr);
+  gap:5px; margin-top:6px; width:100%; box-sizing:border-box;
+}
+.dot {
+  aspect-ratio:1; min-height:28px; border-radius:6px;
+  background:var(--dot-future); cursor:pointer; transition:transform .1s, box-shadow .15s;
+}
+.dot:active { transform:scale(.88); }
+.dot.zero    { background:#5C1A1A; }
+.dot.part    { background:#FF8C00; }
+.dot.ok      { background:#FFD700; }
+.dot.perfect { background:#00C853; box-shadow:0 0 6px rgba(0,200,83,.4); }
+.dot.today-d { background:#FF5F1F; box-shadow:0 0 8px rgba(255,95,31,.7); }
+.dot.frozen  { background:#00D4FF; box-shadow:0 0 6px rgba(0,212,255,.5); }
+.dot.viewing { outline:2px solid #fff; outline-offset:1px; }
+/* today-ring: white border pulse to mark the current day regardless of colour */
+.dot.today-ring {
+  outline:2.5px solid rgba(255,255,255,.9);
+  outline-offset:2px;
+  animation:today-pulse 2s ease-in-out infinite;
+}
+@keyframes today-pulse {
+  0%,100% { outline-color:rgba(255,255,255,.9); }
+  50%      { outline-color:rgba(255,255,255,.3); }
+}
+
+/* ── SUMMARY CARDS ── */
+.sg { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px; }
+@media(max-width:380px){ .sg { grid-template-columns:repeat(2,1fr); } }
+.sc {
+  background:var(--sc-bg); border:1px solid var(--rc-bdr);
+  border-radius:8px; padding:12px; text-align:center;
+  transition:background .25s, border-color .25s;
+}
+.sc-ic { font-size:22px; margin-bottom:4px; display:block; }
+.sc-v {
+  font-family:'Bebas Neue',Impact,Arial,sans-serif;
+  font-size:24px; color:var(--gold); line-height:1; margin-bottom:2px; letter-spacing:1px;
+}
+.sc-l { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted2); text-transform:uppercase; letter-spacing:1px; }
+.sum-tabs { display:flex; gap:6px; margin-bottom:12px; }
+.sum-tab {
+  flex:1; text-align:center; padding:6px; border-radius:6px;
+  border:1px solid var(--rc-bdr); font-family:'JetBrains Mono',monospace;
+  font-size:10px; letter-spacing:1px; text-transform:uppercase;
+  color:var(--muted2); cursor:pointer; background:none;
+  transition:all .2s;
+}
+.sum-tab-act { color:var(--gold); border-color:rgba(245,166,35,.4); background:rgba(245,166,35,.08); }
+
+/* total box */
+.totbox {
+  background:#151E28; border:1px solid rgba(245,166,35,.3);
+  border-radius:8px; padding:16px; text-align:center;
+}
+body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
+.tot-l { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; margin-bottom:5px; }
+.tot-v { font-family:'Bebas Neue',Impact,Arial,sans-serif; font-size:50px; color:var(--gold); line-height:1; letter-spacing:2px; }
+.tot-sub { color:var(--muted); font-size:12px; margin-top:4px; }
+.tot-pb { height:4px; background:var(--gbar-bg); border-radius:2px; margin-top:10px; }
+.tot-pf { height:100%; background:linear-gradient(90deg,#FF5F1F,#F5A623,#2ECC8A); border-radius:2px; transition:width 1s; }
+
+/* ── VISION BOARD ── */
+.vb-board {
+  background:var(--vb-bg); border:1px solid var(--vb-bdr);
+  border-radius:8px; padding:14px; margin-bottom:14px;
+  transition:background .25s, border-color .25s;
+}
+.vb-item {
+  font-size:13px; color:var(--vb-txt); line-height:1.6;
+  padding:8px 4px; border-bottom:1px solid var(--vb-bdr);
+  font-style:italic; cursor:pointer;
+  display:flex; align-items:flex-start; gap:8px; transition:opacity .2s;
+}
+.vb-item:last-child { border-bottom:none; }
+.vb-item.vb-read { opacity:.45; }
+.vb-item.vb-read .vb-txt { text-decoration:line-through; }
+.vb-check {
+  flex-shrink:0; width:18px; height:18px; margin-top:2px;
+  border:1.5px solid var(--vb-chk); border-radius:4px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-style:normal; color:#00C853; transition:all .2s;
+}
+.vb-item.vb-read .vb-check { background:#00C853; border-color:#00C853; color:#fff; }
+.vb-item.vb-read .vb-check::after { content:'✓'; }
+
+/* affirmation rep buttons */
+.repw { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+.repb {
+  padding:7px 14px; border-radius:6px; cursor:pointer;
+  background:var(--rc-bg); border:1px solid var(--rc-bdr);
+  font-family:'Bebas Neue',Impact,Arial,sans-serif; font-size:14px;
+  color:var(--muted); letter-spacing:1px; transition:all .2s;
+}
+.repb.rd { background:var(--gold); color:#000; border-color:var(--gold); font-weight:700; }
+
+/* ── TRADE CARD ── */
+.twrap {
+  background:var(--bg4); border:1px solid var(--border2);
+  border-radius:8px; overflow:hidden; margin-bottom:10px;
+  transition:background .25s;
+}
+.thdr {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:9px 13px; background:var(--bg3);
+}
+.tlbl {
+  font-family:'Bebas Neue',Impact,Arial,sans-serif;
+  font-size:15px; letter-spacing:1px; color:var(--cyan);
+}
+.tbody { padding:11px 13px; }
+
+/* ── TOAST ── */
+.toast {
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(60px);
+  background:var(--toast-bg); color:var(--text); border:1px solid var(--border2);
+  border-radius:8px; padding:10px 20px; font-size:13px;
+  transition:transform .3s ease, opacity .3s ease; opacity:0; z-index:999;
+  white-space:nowrap; max-width:90vw; overflow:hidden; text-overflow:ellipsis;
+}
+.toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
+/* ── CONFIRM MODAL ── */
+.confirm-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,.85);
+  z-index:300; align-items:center; justify-content:center;
+}
+.confirm-overlay.open { display:flex; }
+.confirm-box {
+  background:var(--modal-bg); border:1px solid var(--border);
+  border-radius:12px; padding:24px; max-width:320px; width:90%; text-align:center;
+}
+.confirm-title { font-family:'Bebas Neue',Impact,sans-serif; font-size:22px; color:var(--red); letter-spacing:1px; margin-bottom:10px; }
+.confirm-msg { font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:20px; }
+.confirm-btns { display:flex; gap:10px; }
+.confirm-ok { flex:1; padding:12px; background:rgba(230,57,70,.2); border:1px solid var(--red); border-radius:7px; color:var(--red); font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; cursor:pointer; letter-spacing:1px; }
+.confirm-cancel { flex:1; padding:12px; background:transparent; border:1px solid var(--border); border-radius:7px; color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:11px; cursor:pointer; }
+
+/* ── LOGS ── */
+.log-row { background:var(--bg2); border:1px solid var(--border); border-radius:8px; margin-bottom:6px; overflow:hidden; transition:background .25s; }
+.log-row-hdr { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; cursor:pointer; gap:8px; }
+.log-row-hdr:hover { background:rgba(255,255,255,.02); }
+.log-row-body { display:none; padding:12px 14px; border-top:1px solid var(--border); }
+.log-row.open .log-row-body { display:block; }
+.log-field { margin-top:8px; }
+.log-field .lbl { font-size:12px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:3px; }
+.log-field .val { font-size:11px; color:var(--text2); background:var(--bg); border-radius:4px; padding:6px 10px; white-space:pre-wrap; line-height:1.5; }
+.log-trade { background:var(--bg); border:1px solid var(--border2); border-radius:6px; padding:10px; margin-top:8px; }
+.log-trade-title { font-size:12px; color:var(--cyan); letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; display:flex; justify-content:space-between; }
+.log-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+@media(max-width:400px){ .log-grid { grid-template-columns:1fr; } }
+.lf-btn { font-family:'JetBrains Mono',monospace; font-size:12px; padding:4px 10px; background:transparent; border:1px solid var(--border); border-radius:4px; color:var(--muted); cursor:pointer; letter-spacing:1px; text-transform:uppercase; }
+.lf-act { background:rgba(0,212,255,.1); border-color:rgba(0,212,255,.4); color:#00D4FF; }
+
+/* ── SETTINGS MODAL ── */
+.settings-overlay {
+  display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,.85); z-index:200; overflow-y:auto; -webkit-overflow-scrolling:touch;
+}
+.settings-overlay.open { display:block; }
+.settings-box {
+  background:var(--modal-bg); border:1px solid var(--border);
+  border-radius:12px; max-width:440px; margin:40px auto; padding:24px;
+}
+.settings-input {
+  width:100%; background:var(--input-bg); border:1px solid var(--border2);
+  border-radius:6px; color:var(--input-txt); font-family:'JetBrains Mono',monospace;
+  font-size:13px; padding:10px 12px; -webkit-text-fill-color:var(--input-txt);
+}
+.settings-lbl { font-size:12px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; display:block; margin-bottom:6px; }
+
+/* ── BROWSING PAST BANNER ── */
+.past-banner {
+  display:none; background:rgba(245,166,35,.12); border:1px solid rgba(245,166,35,.3);
+  border-radius:8px; padding:10px 14px; margin-bottom:12px;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.past-banner.hidden { display:none !important; }
+.past-banner-txt { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gold); letter-spacing:1px; }
+.past-banner-btn {
+  padding:5px 12px; background:rgba(245,166,35,.15); border:1px solid rgba(245,166,35,.4);
+  border-radius:5px; color:var(--gold); font-family:'JetBrains Mono',monospace;
+  font-size:11px; cursor:pointer; white-space:nowrap; letter-spacing:0.5px;
+}
+</style>
+</head>
+<body>
+
+<!-- ── CONFIRM MODAL ── -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-title" id="confirmTitle">Are You Sure?</div>
+    <div class="confirm-msg" id="confirmMsg">This action cannot be undone.</div>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" onclick="confirmCancel()">Cancel</button>
+      <button class="confirm-ok" id="confirmOkBtn" onclick="confirmOk()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── HEADER ── -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="brand">
+      <div class="brand-icon" onclick="hideLogs()" title="Back to Dashboard">🏆</div>
+      <div>
+        <div class="brand-name" id="brandName">50K CHALLENGE</div>
+        <div class="brand-sub" id="brandSub" onclick="openSettingsDeferred()" title="Tap to change dates">10 Mar → 17 Jun 2026</div>
+      </div>
+    </div>
+    <div class="day-nav" id="dayNav">
+      <button class="day-nav-arrow" id="navPrev" onclick="chDay(-1)" aria-label="Previous day">‹</button>
+      <div class="day-lbl" id="browseLbl">DAY 1</div>
+      <button class="day-nav-arrow" id="navNext" onclick="chDay(1)" aria-label="Next day">›</button>
+    </div>
+  </div>
+
+  <div style="padding:6px 14px 8px;border-top:1px solid var(--border)">
+    <div class="hstats">
+      <div class="hs"><span class="hs-v" id="hLeft">99</span><span class="hs-l">Left</span></div>
+      <div class="hs"><span class="hs-v" id="hStreak">0🔥</span><span class="hs-l">Streak</span></div>
+      <div class="hs"><span class="hs-v" id="hFreeze">0🧊</span><span class="hs-l">Freezes</span></div>
+      <div class="hs"><span class="hs-v" id="hPct">0h</span><span class="hs-l">Hours</span></div>
+    </div>
+  </div>
+  <div class="gbar"><div class="gbar-f" id="gpf" style="width:1%"></div></div>
+  <div class="action-bar">
+    <div id="lastSaved" class="action-bar-btn ab-saved"></div>
+    <button class="action-bar-btn ab-today" onclick="goToday()">📅 TODAY</button>
+    <button class="action-bar-btn ab-theme" id="themeBtn" onclick="toggleTheme()">☀️ DAY</button>
+    <button class="action-bar-btn ab-logs" onclick="showLogs()">📋 LOGS</button>
+    <button class="action-bar-btn ab-set" onclick="openSettingsDeferred()">⚙️ SET</button>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main" id="mainContent">
+
+<!-- BROWSING PAST BANNER -->
+<div class="past-banner hidden" id="pastBanner">
+  <span class="past-banner-txt" id="pastBannerTxt">← Browsing Day 1</span>
+  <button class="past-banner-btn" onclick="goToday()">↩ Back to Today</button>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div style="flex:1;min-width:0;overflow:hidden;">
+      <div class="day-eyebrow" id="dayEyebrow">TODAY</div>
+      <div class="day-num-big">DAY <span id="bigDay">1</span></div>
+      <div class="day-date-str" id="dateStr"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+      <div style="position:relative;width:90px;height:90px;">
+        <svg width="90" height="90" viewBox="0 0 110 110" style="transform:rotate(-90deg);display:block;">
+          <circle cx="55" cy="55" r="46" fill="none" stroke="var(--ring-track)" stroke-width="10"/>
+          <circle id="ringCircle" cx="55" cy="55" r="46" fill="none" stroke="#FF5F1F" stroke-width="10"
+            stroke-dasharray="289.0" stroke-dashoffset="289.0"
+            style="transition:stroke-dashoffset .4s,stroke .4s;"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div id="rPct" style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;color:#FF5F1F;line-height:1;">0%</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:1px;">TODAY</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div><div class="hs2-l">PRODUCTIVE</div><div class="hs2-v" id="prodT">0h 0m</div></div>
+        <div><div class="hs2-l">TASKS DONE</div><div class="hs2-v gold" id="taskD">0 / 8</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clear day button (past days only) -->
+  <div id="clearDayBtn" style="display:none;">
+    <button onclick="clearThisDay()" style="background:rgba(255,59,92,.12);border:1px solid rgba(255,59,92,.35);border-radius:6px;padding:6px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#FF3B5C;letter-spacing:1px;cursor:pointer;text-transform:uppercase;">🗑 Clear This Day</button>
+  </div>
+
+  <!-- Progress map -->
+  <div style="width:100%;overflow:hidden;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <div class="slbl" id="gridLabel" style="margin:0;white-space:nowrap;font-size:11px;">100 Day Progress</div>
+      <div style="flex:1;height:3px;background:var(--gbar-bg);border-radius:2px;overflow:hidden;">
+        <div id="challengeProgressBar" style="height:100%;width:0%;background:linear-gradient(90deg,#FF5F1F,#F5A623,#00C853);border-radius:2px;transition:width .6s;"></div>
+      </div>
+      <div id="challengeProgressPct" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);white-space:nowrap;">0%</div>
+    </div>
+    <div class="dgrid" id="dgrid"></div>
+  </div>
+</div>
+
+<div class="slbl" style="margin-top:4px">Morning Rituals</div>
+
+<!-- MEDITATION -->
+<div class="rc cm" id="rc-med">
+  <div class="rc-hdr" onclick="tog('med')">
+    <div class="rc-ico">🧘</div>
+    <div class="rc-meta">
+      <div class="rc-title">Meditation <span class="tag tag-m">Compulsory</span></div>
+      <div class="rc-sub">15 min · Silence &amp; Breath · Day <span class="db">1</span>/100</div>
+    </div>
+    <div class="rc-r"><div class="arr">▼</div></div>
+  </div>
+  <div class="rc-body">
+    <div class="trow">
+      <div class="tbar">
+        <span class="tnum" id="t-med">15:00</span>
+        <div class="tbars">
+          <div class="tbar-lbl" id="tl-med">Target -- 15 minutes</div>
+          <div class="tprog"><div class="tprog-f" id="tb-med" style="width:0%"></div></div>
+        </div>
+        <div class="tbtns">
+          <button class="tbtn ts" onclick="tS('med')">▶ Start</button>
+          <button class="tbtn tp" onclick="tP('med')">■ Stop</button>
+          <button class="tbtn tbtn-r" onclick="tR('med')">↺</button>
+        </div>
+      </div>
+    </div>
+    <div class="fl"><label>How did you feel during meditation?</label>
+    <textarea class="fta" id="f-med-n" placeholder="Mind was restless for first 5 min, then settled. Felt calm after..."></textarea></div>
+    <button class="sbtn" id="btn-med" onclick="done('med')">✓ Mark Meditation Complete</button>
+  </div>
+</div>
+
+<!-- PHYSICAL -->
+<div class="rc cb" id="rc-phy">
+  <div class="rc-hdr" onclick="tog('phy')">
+    <div class="rc-ico">🏀</div>
+    <div class="rc-meta">
+      <div class="rc-title">Physical Activity <span class="tag tag-m">Compulsory</span></div>
+      <div class="rc-sub">30 min · Move · Win the morning</div>
+    </div>
+    <div class="rc-r"><div class="arr">▼</div></div>
+  </div>
+  <div class="rc-body">
+    <div class="fl"><label>Activity -- What did you do?</label>
+    <input type="text" class="fi" id="f-phy-a" placeholder="e.g. Basketball · Running 3km · Home Circuit · Cycling..."></div>
+    <div class="trow">
+      <div class="tbar">
+        <span class="tnum" id="t-phy">30:00</span>
+        <div class="tbars">
+          <div class="tbar-lbl" id="tl-phy">Target -- 30 minutes</div>
+          <div class="tprog"><div class="tprog-f" id="tb-phy" style="width:0%"></div></div>
+        </div>
+        <div class="tbtns">
+          <button class="tbtn ts" onclick="tS('phy')">▶ Start</button>
+          <button class="tbtn tp" onclick="tP('phy')">■ Stop</button>
+          <button class="tbtn tbtn-r" onclick="tR('phy')">↺</button>
+        </div>
+      </div>
+    </div>
+    <div class="fl"><label>Energy level / How it felt</label>
+    <textarea class="fta" id="f-phy-n" placeholder="Felt heavy at start. Won 3 basketball games. Energised after..." style="min-height:50px"></textarea></div>
+    <button class="sbtn" id="btn-phy" onclick="done('phy')">✓ Mark Physical Complete</button>
+  </div>
+</div>
+
+<!-- AFFIRMATIONS -->
+<div class="rc ca" id="rc-aff">
+  <div class="rc-hdr" onclick="tog('aff')">
+    <div class="rc-ico">✍️</div>
+    <div class="rc-meta">
+      <div class="rc-title">Affirmations + Gratitude <span class="tag tag-m">Compulsory</span></div>
+      <div class="rc-sub">5 affirmations · Speak 2× · 3 gratitudes</div>
+    </div>
+    <div class="rc-r"><div class="arr">▼</div></div>
+  </div>
+  <div class="rc-body">
+    <div class="slbl" style="font-size:11px;margin-bottom:10px">🌟 Vision Board -- Read with Full Feeling</div>
+    <div class="vb-board">
+      <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">🏃 Thank you Prabhu Ji for blessing me with completing my first 11km marathon in 2026</span></div>
+      <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">💰 Thank you Prabhu Ji for flowing ₹50 Lakh into my life and family in 2026</span></div>
+      <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">💪 Thank you Prabhu Ji for gifting me a strong, fit body with 4 visible abs in 2026</span></div>
+      <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">🥗 I nourish my body with clean food daily and I radiate the best health in 2026</span></div>
+      <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">🏔️ Thank you Prabhu Ji for our beautiful family trip to North East India in 2026</span></div>
+      <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">🏡 Thank you Prabhu Ji for our dream home in the finest society in Delhi in 2026</span></div>
+      <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">📈 Thank you Prabhu Ji for making me a calm, disciplined and profitable trader in 2026</span></div>
+      <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">👨‍👧 My daughter grows up watching a father who builds empires from 5:30 AM every day</span></div>
+      <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">🏢 Thank you Prabhu Ji for my personal office 20 minutes from home in 2026</span></div>
+      <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">🏆 I am in the top 1% -- in health, wealth, mindset and family -- in 2026</span></div>
+    </div>
+    <div class="slbl" style="font-size:11px;margin-bottom:8px">Complete Vision Board -- Twice Daily</div>
+    <div class="repw">
+      <button class="repb" id="rb1" onclick="rep(1)">☀️ Morning -- Read &amp; Feel</button>
+      <button class="repb" id="rb2" onclick="rep(2)">🌙 Evening -- Read &amp; Feel</button>
+    </div>
+    <div class="slbl" style="font-size:11px;margin-bottom:8px">3 Gratitudes Today</div>
+    <div class="fl"><input type="text" class="fi" id="f-g1" placeholder="I am grateful for..."></div>
+    <div class="fl"><input type="text" class="fi" id="f-g2" placeholder="I am grateful for..."></div>
+    <div class="fl"><input type="text" class="fi" id="f-g3" placeholder="I am grateful for..."></div>
+    <button class="sbtn" id="btn-aff" onclick="done('aff')" style="margin-top:10px;">✓ Mark Vision Board Complete</button>
+  </div>
+</div>
+
+<!-- PODCAST -->
+<div class="rc cc" id="rc-pod">
+  <div class="rc-hdr" onclick="tog('pod')">
+    <div class="rc-ico">🎧</div>
+    <div class="rc-meta">
+      <div class="rc-title">Morning Podcast <span class="tag tag-m">Compulsory</span></div>
+      <div class="rc-sub">40 min · One episode · Metro / Home</div>
+    </div>
+    <div class="rc-r"><div class="arr">▼</div></div>
+  </div>
+  <div class="rc-body">
+    <div class="fl"><label>Podcast Name + Episode</label>
+    <input type="text" class="fi" id="f-pod-n" placeholder="e.g. Chat With Traders Ep.245 -- Risk Management..."></div>
+    <div class="trow">
+      <div class="tbar">
+        <span class="tnum" id="t-pod">40:00</span>
+        <div class="tbars">
+          <div class="tbar-lbl" id="tl-pod">Target -- 40 minutes</div>
+          <div class="tprog"><div class="tprog-f" id="tb-pod" style="width:0%"></div></div>
+        </div>
+        <div class="tbtns">
+          <button class="tbtn ts" onclick="tS('pod')">▶ Start</button>
+          <button class="tbtn tp" onclick="tP('pod')">■ Stop</button>
+          <button class="tbtn tbtn-r" onclick="tR('pod')">↺</button>
+        </div>
+      </div>
+    </div>
+    <div class="fl"><label>Key Insight from this Episode</label>
+    <textarea class="fta" id="f-pod-k" placeholder="The single most important thing I learned..."></textarea></div>
+    <button class="sbtn" id="btn-pod" onclick="done('pod')">✓ Mark Podcast Complete</button>
+  </div>
+</div>
+
+<div class="slbl" style="margin-top:4px">Trading Block</div>
+
+<!-- TRADING -->
+<div class="rc cb" id="rc-trd">
+  <div class="rc-hdr" onclick="tog('trd')">
+    <div class="rc-ico">📊</div>
+    <div class="rc-meta">
+      <div class="rc-title">Paper Trades 1 + 2 <span class="tag tag-m">Compulsory</span></div>
+      <div class="rc-sub">Max loss ₹100 each · Full journal · Both trades</div>
+    </div>
+    <div class="rc-r"><div class="arr">▼</div></div>
+  </div>
+  <div class="rc-body">
+    <!-- TRADE 1 -->
+    <div class="twrap">
+      <div class="thdr">
+        <div class="tlbl">📈 TRADE 1</div>
+        <select class="fsel" id="f-t1r" style="background:var(--bg);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:4px 8px">
+          <option value="">-- Result --</option>
+          <option value="win">✅ WIN</option>
+          <option value="loss">❌ LOSS</option>
+          <option value="be">⚖️ BREAKEVEN</option>
+        </select>
+      </div>
+      <div class="tbody">
+        <div class="fl"><label>Structure / Setup Seen</label>
+        <input type="text" class="fi" id="f-t1s" placeholder="e.g. Bullish Engulfing at support -- BankNifty 15min..."></div>
+        <div class="g3">
+          <div class="fl"><label>Entry Price</label><input type="text" class="fi" id="f-t1en" placeholder="₹44,200" oninput="calcPnl(1)"></div>
+          <div class="fl"><label>Stop Loss</label><input type="text" class="fi" id="f-t1sl" placeholder="₹43,900"></div>
+          <div class="fl"><label>Target (2:1)</label><input type="text" class="fi" id="f-t1tg" placeholder="₹44,700"></div>
+        </div>
+        <div class="g2">
+          <div class="fl"><label>Exit Price</label><input type="text" class="fi" id="f-t1ex" placeholder="Actual exit" oninput="calcPnl(1)"></div>
+          <div class="fl"><label>Time in Trade</label><input type="text" class="fi" id="f-t1tm" placeholder="e.g. 1h 20m"></div>
+        </div>
+        <div class="g2">
+          <div class="fl"><label>Qty / Lots</label><input type="text" class="fi" id="f-t1qty" placeholder="e.g. 1 lot" oninput="calcPnl(1)"></div>
+          <div class="fl"><label>P&amp;L (Auto)</label>
+            <div id="pnl1" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--muted);text-align:center;min-height:42px;display:flex;align-items:center;justify-content:center;">--</div>
+          </div>
+        </div>
+        <div class="fl"><label>Entry Logic / Reason</label>
+        <textarea class="fta" id="f-t1wh" placeholder="Why did this setup qualify?"></textarea></div>
+        <div class="g2">
+          <div class="fl"><label>✅ Good Decision</label><textarea class="fta" id="f-t1gd" style="min-height:55px" placeholder="What you did right..."></textarea></div>
+          <div class="fl"><label>❌ Bad Decision</label><textarea class="fta" id="f-t1bd" style="min-height:55px" placeholder="What you did wrong..."></textarea></div>
+        </div>
+        <div class="fl"><label>📚 Learning + Patience Score (1-10)</label>
+        <textarea class="fta" id="f-t1ln" placeholder="Key learning. Patience score: X/10 because..."></textarea></div>
+      </div>
+    </div>
+    <!-- TRADE 2 -->
+    <div class="twrap">
+      <div class="thdr">
+        <div class="tlbl">📉 TRADE 2</div>
+        <select class="fsel" id="f-t2r" style="background:var(--bg);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:4px 8px">
+          <option value="">-- Result --</option>
+          <option value="win">✅ WIN</option>
+          <option value="loss">❌ LOSS</option>
+          <option value="be">⚖️ BREAKEVEN</option>
+        </select>
+      </div>
+      <div class="tbody">
+        <div class="fl"><label>Structure / Setup Seen</label>
+        <input type="text" class="fi" id="f-t2s" placeholder="e.g. Bearish breakdown below resistance -- Nifty 5min..."></div>
+        <div class="g3">
+          <div class="fl"><label>Entry Price</label><input type="text" class="fi" id="f-t2en" placeholder="₹19,850" oninput="calcPnl(2)"></div>
+          <div class="fl"><label>Stop Loss</label><input type="text" class="fi" id="f-t2sl" placeholder="₹20,050"></div>
+          <div class="fl"><label>Target (2:1)</label><input type="text" class="fi" id="f-t2tg" placeholder="₹19,450"></div>
+        </div>
+        <div class="g2">
+          <div class="fl"><label>Exit Price</label><input type="text" class="fi" id="f-t2ex" placeholder="Actual exit" oninput="calcPnl(2)"></div>
+          <div class="fl"><label>Time in Trade</label><input type="text" class="fi" id="f-t2tm" placeholder="e.g. 45m"></div>
+        </div>
+        <div class="g2">
+          <div class="fl"><label>Qty / Lots</label><input type="text" class="fi" id="f-t2qty" placeholder="e.g. 1 lot" oninput="calcPnl(2)"></div>
+          <div class="fl"><label>P&amp;L (Auto)</label>
+            <div id="pnl2" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--muted);text-align:center;min-height:42px;display:flex;align-items:center;justify-content:center;">--</div>
+          </div>
+        </div>
+        <div class="fl"><label>Entry Logic / Reason</label>
+        <textarea class="fta" id="f-t2wh" placeholder="What rule did this setup meet?"></textarea></div>
+        <div class="g2">
+          <div class="fl"><label>✅ Good Decision</label><textarea class="fta" id="f-t2gd" style="min-height:55px" placeholder="What you did right..."></textarea></div>
+          <div class="fl"><label>❌ Bad Decision</label><textarea class="fta" id="f-t2bd" style="min-height:55px" placeholder="What you did wrong..."></textarea></div>
+        </div>
+        <div class="fl"><label>📚 Learning + Patience Score (1-10)</label>
+        <textarea class="fta" id="f-t2ln" placeholder="Key learning. Patience score: X/10 because..."></textarea></div>
+      </div>
+    </div>
+    <!-- Day P&L total -->
+    <div id="dayPnlBox" style="display:none;margin:14px 0 4px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:14px 18px;">
+      <div style="font-size:12px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Day Total P&amp;L</div>
+      <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;">
+        <div id="dayPnlAmt" style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--muted)">--</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div id="dayPnlT1" style="font-size:11px;color:var(--muted)"></div>
+          <div id="dayPnlT2" style="font-size:11px;color:var(--muted)"></div>
+        </div>
+      </div>
+    </div>
+    <button class="sbtn" id="btn-trd" onclick="done('trd')">✓ Both Trades Logged</button>
+  </div>
+</div>
+
+<!-- PATTERN STUDY -->
+<div class="rc co" id="rc-pat">
+  <div class="rc-hdr" onclick="tog('pat')">
+    <div class="rc-ico">🔬</div>
+    <div class="rc-meta">
+      <div class="rc-title">Trade Pattern Study</div>
+      <div class="rc-sub">30 min · One pattern · Office / Metro</div>
+    </div>
+    <div class="rc-r"><div class="arr">▼</div></div>
+  </div>
+  <div class="rc-body">
+    <div class="fl"><label>Pattern / Topic Studied</label>
+    <input type="text" class="fi" id="f-pat-n" placeholder="e.g. Head &amp; Shoulders · Double Bottom · Options Delta Decay..."></div>
+    <div class="trow">
+      <div class="tbar">
+        <span class="tnum" id="t-pat">30:00</span>
+        <div class="tbars">
+          <div class="tbar-lbl" id="tl-pat">Target -- 30 minutes</div>
+          <div class="tprog"><div class="tprog-f" id="tb-pat" style="width:0%"></div></div>
+        </div>
+        <div class="tbtns">
+          <button class="tbtn ts" onclick="tS('pat')">▶ Start</button>
+          <button class="tbtn tp" onclick="tP('pat')">■ Stop</button>
+          <button class="tbtn tbtn-r" onclick="tR('pat')">↺</button>
+        </div>
+      </div>
+    </div>
+    <div class="fl"><label>Key Insight -- In Your Own Words</label>
+    <textarea class="fta" id="f-pat-k" placeholder="When does this pattern work? When does it fail?"></textarea></div>
+    <button class="sbtn" id="btn-pat" onclick="done('pat')">✓ Mark Pattern Study Complete</button>
+  </div>
+</div>
+
+<!-- DIPLOMA -->
+<div class="rc cd" id="rc-dip">
+  <div class="rc-hdr" onclick="tog('dip')">
+    <div class="rc-ico">🎓</div>
+    <div class="rc-meta">
+      <div class="rc-title">Health Diploma / Certification <span class="tag tag-o">If Time</span></div>
+      <div class="rc-sub">40 min · Evening study · Compounds with Finance background</div>
+    </div>
+    <div class="rc-r"><div class="arr">▼</div></div>
+  </div>
+  <div class="rc-body">
+    <div class="fl"><label>Course / Module Studied Today</label>
+    <input type="text" class="fi" id="f-dip-n" placeholder="e.g. NISM Options Module 3 · Precision Nutrition Unit 4..."></div>
+    <div class="trow">
+      <div class="tbar">
+        <span class="tnum" id="t-dip">40:00</span>
+        <div class="tbars">
+          <div class="tbar-lbl" id="tl-dip">Target -- 40 minutes</div>
+          <div class="tprog"><div class="tprog-f" id="tb-dip" style="width:0%"></div></div>
+        </div>
+        <div class="tbtns">
+          <button class="tbtn ts" onclick="tS('dip')">▶ Start</button>
+          <button class="tbtn tp" onclick="tP('dip')">■ Stop</button>
+          <button class="tbtn tbtn-r" onclick="tR('dip')">↺</button>
+        </div>
+      </div>
+    </div>
+    <div class="fl"><label>Concept Learned Today</label>
+    <textarea class="fta" id="f-dip-k" placeholder="Summarise in your own words what you studied..."></textarea></div>
+    <button class="sbtn" id="btn-dip" onclick="done('dip')">✓ Mark Diploma Study Complete</button>
+  </div>
+</div>
+
+<div class="slbl" style="margin-top:4px">Night Rituals</div>
+
+<!-- NIGHT RITUALS -->
+<div class="rc cn" id="rc-ngt">
+  <div class="rc-hdr" onclick="tog('ngt')">
+    <div class="rc-ico">🌙</div>
+    <div class="rc-meta">
+      <div class="rc-title">Night Rituals -- Sleep by 10:30 PM <span class="tag tag-m">Compulsory</span></div>
+      <div class="rc-sub">5 habits · Prepare · Reflect · Visualise · Rest</div>
+    </div>
+    <div class="rc-r"><div class="arr">▼</div></div>
+  </div>
+  <div class="rc-body">
+    <div class="slbl" style="font-size:11px;margin-bottom:8px">5 Compulsory Night Habits</div>
+    <div class="clist">
+      <div class="ci" onclick="ck(this)"><div class="ci-box"></div><div class="ci-ic">📋</div><div class="ci-t">Prepared tomorrow -- trades, schedule, 1 priority written</div></div>
+      <div class="ci" onclick="ck(this)"><div class="ci-box"></div><div class="ci-ic">🦷</div><div class="ci-t">Brushed teeth -- non-negotiable nightly habit</div></div>
+      <div class="ci" onclick="ck(this)"><div class="ci-box"></div><div class="ci-ic">😴</div><div class="ci-t">Sleep prep at 10:00 PM -- phone in hall, lights dim</div></div>
+      <div class="ci" onclick="ck(this)"><div class="ci-box"></div><div class="ci-ic">🖼️</div><div class="ci-t">Read Vision Board -- basketball, 400 gaj house, family, office</div></div>
+      <div class="ci" onclick="ck(this)"><div class="ci-box"></div><div class="ci-ic">✨</div><div class="ci-t">Wrote 10 good things about myself -- full 10, no shortcuts</div></div>
+    </div>
+    <div class="slbl" style="font-size:11px;margin-bottom:8px">3 Things I Will Improve Tomorrow</div>
+    <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;"><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:#FF5F1F;width:20px;flex-shrink:0">1.</span><input type="text" class="fi" id="f-imp1" placeholder="Tomorrow I will improve..."></div>
+      <div style="display:flex;align-items:center;gap:8px;"><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:#FF5F1F;width:20px;flex-shrink:0">2.</span><input type="text" class="fi" id="f-imp2" placeholder="Tomorrow I will improve..."></div>
+      <div style="display:flex;align-items:center;gap:8px;"><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:#FF5F1F;width:20px;flex-shrink:0">3.</span><input type="text" class="fi" id="f-imp3" placeholder="Tomorrow I will improve..."></div>
+    </div>
+    <div class="slbl" style="font-size:11px;margin-bottom:8px">2 People I Complimented Today 🤝</div>
+    <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:16px">👤</span><input type="text" class="fi" id="f-comp1" placeholder="Name -- what I said to them..."></div>
+      <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:16px">👤</span><input type="text" class="fi" id="f-comp2" placeholder="Name -- what I said to them..."></div>
+    </div>
+    <div class="fl"><label>Tomorrow's Top Priority</label>
+    <input type="text" class="fi" id="f-tmrw" placeholder="e.g. Study Options Delta 60min · Paper trade BankNifty breakout..."></div>
+    <div class="fl"><label>Actual Sleep Time</label>
+    <input type="text" class="fi" id="f-sleep" value="10:30 PM"></div>
+    <button class="sbtn" id="btn-ngt" onclick="done('ngt')">✓ Night Rituals Complete -- Rest Well 🌙</button>
+  </div>
+</div>
+
+<div class="slbl" style="margin-top:4px">Day Summary</div>
+
+<!-- SUMMARY CARD -->
+<div class="rc" style="border-color:rgba(245,166,35,.2)">
+  <div class="rc-hdr" onclick="tog('sum')">
+    <div class="rc-ico" style="font-size:18px">⚡</div>
+    <div class="rc-meta">
+      <div class="rc-title" style="color:var(--gold)">Cumulative Challenge Summary</div>
+      <div class="rc-sub">All days combined -- tap to expand</div>
+    </div>
+    <div class="rc-r"><div class="arr">▼</div></div>
+  </div>
+  <div class="rc-body" id="sumBody" style="display:block">
+    <div class="sum-tabs">
+      <button class="sum-tab sum-tab-act" onclick="setSumTab('today',this)">Today</button>
+      <button class="sum-tab" onclick="setSumTab('all',this)">All Days</button>
+      <button class="sum-tab" onclick="setSumTab('week',this)">This Week</button>
+    </div>
+    <div id="sumTabLabel" style="font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">TODAY</div>
+    <div class="sg">
+      <div class="sc"><div class="sc-ic">🧘</div><div class="sc-v" id="s-med">0m</div><div class="sc-l">Meditation</div></div>
+      <div class="sc"><div class="sc-ic">🏀</div><div class="sc-v" id="s-phy">0m</div><div class="sc-l">Physical</div></div>
+      <div class="sc"><div class="sc-ic">🎧</div><div class="sc-v" id="s-pod">0m</div><div class="sc-l">Podcast</div></div>
+      <div class="sc"><div class="sc-ic">📊</div><div class="sc-v" id="s-trd">0m</div><div class="sc-l">Trading</div></div>
+      <div class="sc"><div class="sc-ic">🔬</div><div class="sc-v" id="s-pat">0m</div><div class="sc-l">Patterns</div></div>
+      <div class="sc"><div class="sc-ic">🎓</div><div class="sc-v" id="s-dip">0m</div><div class="sc-l">Diploma</div></div>
+      <div class="sc"><div class="sc-ic">✅</div><div class="sc-v" id="s-days">0</div><div class="sc-l">Days Done</div></div>
+      <div class="sc"><div class="sc-ic">📈</div><div class="sc-v" id="s-trades">0</div><div class="sc-l">Trades</div></div>
+      <div class="sc"><div class="sc-ic">📝</div><div class="sc-v" id="s-notes">0</div><div class="sc-l">Notes</div></div>
+    </div>
+    <div class="totbox">
+      <div class="tot-l">Total Productive Time -- All Days</div>
+      <div class="tot-v" id="totV">0h 0m</div>
+      <div class="tot-sub" id="totSub">Challenge Target: 100 × 3h 15m</div>
+      <div class="tot-pb"><div class="tot-pf" id="totF"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGS PANEL (hidden by default) -->
+<div id="logsPanel" style="display:none;">
+  <div style="position:sticky;top:0;z-index:50;background:var(--hdr-bg);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <button onclick="hideLogs()" style="font-family:JetBrains Mono,Courier New,monospace;font-size:11px;padding:6px 14px;background:rgba(255,95,31,.15);border:1px solid rgba(255,95,31,.4);border-radius:6px;color:#FF5F1F;cursor:pointer;font-weight:700;">← Dashboard</button>
+    <span style="font-family:JetBrains Mono,monospace;font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">Previous Logs</span>
+  </div>
+  <div style="padding:16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div style="font-family:JetBrains Mono,Courier New,monospace;font-size:12px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;">All Days -- Previous Logs</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button onclick="downloadAll()" style="font-family:JetBrains Mono,Courier New,monospace;font-size:12px;padding:5px 12px;background:rgba(46,204,138,.15);border:1px solid rgba(46,204,138,.3);border-radius:4px;color:#2ECC8A;cursor:pointer;letter-spacing:1px;">⬇ Download CSV</button>
+        <button onclick="hideLogs()" style="font-family:JetBrains Mono,Courier New,monospace;font-size:11px;padding:7px 16px;background:rgba(255,95,31,.15);border:1px solid rgba(255,95,31,.4);border-radius:6px;color:#FF5F1F;cursor:pointer;letter-spacing:1px;font-weight:700;">← Back</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;" id="logFilter">
+      <button class="lf-btn lf-act" onclick="setLogFilter('all',this)">All Days</button>
+      <button class="lf-btn" onclick="setLogFilter('done',this)">✓ Completed</button>
+      <button class="lf-btn" onclick="setLogFilter('part',this)">◑ Partial</button>
+      <button class="lf-btn" onclick="setLogFilter('trade',this)">📊 Has Trades</button>
+    </div>
+    <div id="logsList"></div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="settings-overlay" id="settingsModal">
+  <div class="settings-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--purple);text-transform:uppercase;">⚙️ Challenge Settings</div>
+      <button onclick="closeSettings()" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;">✕</button>
+    </div>
+    <!-- Danger zone -->
+    <div onclick="askNuclearClear()" style="background:rgba(255,59,92,.12);border:1.5px solid rgba(255,59,92,.4);border-radius:10px;padding:13px 16px;margin-bottom:18px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+      <div style="font-size:22px;flex-shrink:0;">🧹</div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#FF3B5C;letter-spacing:1px;">CLEAR PAST DAY DATA</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">Wipes ghost data from all days except today</div>
+      </div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <label class="settings-lbl">Challenge Start Date</label>
+      <input type="date" id="set-startDate" class="settings-input">
+    </div>
+    <div style="margin-bottom:16px;">
+      <label class="settings-lbl">Challenge Length (Days)</label>
+      <input type="number" id="set-days" min="30" max="365" class="settings-input" placeholder="100">
+    </div>
+    <div style="margin-bottom:16px;">
+      <label class="settings-lbl">Challenge Name</label>
+      <input type="text" id="set-name" class="settings-input" placeholder="50K CHALLENGE">
+    </div>
+    <div style="margin-bottom:16px;">
+      <label class="settings-lbl">Daily Target (minutes)</label>
+      <input type="number" id="set-target" min="30" max="600" class="settings-input" placeholder="195">
+    </div>
+    <div style="background:rgba(255,95,31,.08);border:1px solid rgba(255,95,31,.2);border-radius:6px;padding:10px 14px;margin-bottom:12px;">
+      <div style="font-size:12px;color:#FF5F1F;margin-bottom:3px;font-weight:700;">⚠️ Note</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.5;">Changing the start date adjusts all day numbers. Existing data stays safe.</div>
+    </div>
+    <div style="margin-bottom:18px;">
+      <button onclick="askClearAll()" style="width:100%;padding:9px;background:rgba(255,59,92,.05);border:1px solid rgba(255,59,92,.2);border-radius:6px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer;letter-spacing:1px;">⚠️ Reset Everything (all days)</button>
+    </div>
+    <!-- Task editor -->
+    <div style="margin-bottom:18px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);">✏️ Customise Tasks</div>
+      <div id="taskEditorList" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="saveSettings()" style="flex:1;padding:12px;background:var(--purple);border:none;border-radius:7px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;">✓ SAVE SETTINGS</button>
+      <button onclick="closeSettings()" style="padding:12px 16px;background:transparent;border:1px solid var(--border);border-radius:7px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+<div class="toast" id="toast"></div>
+<script>
+'use strict';
+/* ═══════════════════════════════════════════════════════════
+   50K CHALLENGE -- CORE ENGINE
+   Fixed: timer persistence, streak calc, day nav display,
+   data save/load, confirm dialogs, CSS tokens, code quality
+   ═══════════════════════════════════════════════════════════ */
+
+// ── CONSTANTS & STATE ──────────────────────────────────────
+var CHALLENGE_START = new Date('2026-03-10T00:00:00');
+var CHALLENGE_DAYS  = 100;
+var DAILY_TARGET    = 195; // minutes
+
+var day     = 1;       // currently viewed day
+var doneMap = {};      // { med: true/false, ... }
+var timState = {};     // timer state per task id
+
+// Confirm dialog callback
+var _confirmCallback = null;
+
+// ── TASK CONFIG ─────────────────────────────────────────────
+var TASK_DEFAULTS = {
+  med: { name:'Meditation',               sub:'15 min · Silence & Breath',            mins:15 },
+  phy: { name:'Physical Activity',        sub:'30 min · Move · Win the morning',       mins:30 },
+  aff: { name:'Affirmations + Gratitude', sub:'5 affirmations · Speak 2× · 3 gratitudes', mins:0 },
+  pod: { name:'Morning Podcast',          sub:'40 min · One episode · Metro / Home',  mins:40 },
+  trd: { name:'Paper Trades 1 + 2',       sub:'Max loss ₹100 each · Full journal',    mins:0  },
+  pat: { name:'Trade Pattern Study',      sub:'30 min · One pattern · Office / Metro',mins:30 },
+  dip: { name:'Health Diploma',           sub:'40 min · Evening study',               mins:40 },
+  ngt: { name:'Night Rituals',            sub:'5 habits · Prepare · Reflect · Rest',  mins:0  }
+};
+var TASK_CONFIG = {}; // loaded from storage or defaults
+
+var BTN_DEFAULT = {
+  med:'✓ Mark Meditation Complete',
+  phy:'✓ Mark Physical Complete',
+  aff:'✓ Mark Vision Board Complete',
+  pod:'✓ Mark Podcast Complete',
+  trd:'✓ Both Trades Logged',
+  pat:'✓ Mark Pattern Study Complete',
+  dip:'✓ Mark Diploma Study Complete',
+  ngt:'✓ Night Rituals Complete -- Rest Well 🌙'
+};
+
+// ── LOCAL STORAGE HELPERS ───────────────────────────────────
+function lsKey(d)       { return '50k_day_' + d; }
+function lsSave(d, obj) { try { localStorage.setItem(lsKey(d), JSON.stringify(obj)); } catch(e){} }
+function lsLoad(d)      { try { var r = localStorage.getItem(lsKey(d)); return r ? JSON.parse(r) : null; } catch(e){ return null; } }
+function lsGet(k)       { try { return localStorage.getItem(k); } catch(e){ return null; } }
+function lsSet(k,v)     { try { localStorage.setItem(k, v); } catch(e){} }
+function lsDel(k)       { try { localStorage.removeItem(k); } catch(e){} }
+
+// ── SETTINGS ────────────────────────────────────────────────
+function loadSettings() {
+  try {
+    var s = JSON.parse(lsGet('50k_settings') || '{}');
+    if (s.startDate) CHALLENGE_START = new Date(s.startDate + 'T00:00:00');
+    if (s.days)      CHALLENGE_DAYS  = parseInt(s.days);
+    if (s.target)    DAILY_TARGET    = parseInt(s.target);
+  } catch(e){}
+  try {
+    var tc = JSON.parse(lsGet('50k_task_config') || 'null');
+    if (tc) TASK_CONFIG = tc;
+    else    TASK_CONFIG = JSON.parse(JSON.stringify(TASK_DEFAULTS));
+  } catch(e) {
+    TASK_CONFIG = JSON.parse(JSON.stringify(TASK_DEFAULTS));
+  }
+}
+
+// ── DATE / DAY HELPERS ──────────────────────────────────────
+function getTodayDay() {
+  var diff = Date.now() - CHALLENGE_START.getTime();
+  var d    = Math.floor(diff / 86400000) + 1;
+  return Math.max(1, Math.min(CHALLENGE_DAYS, d));
+}
+
+function dayToDate(d) {
+  var dt = new Date(CHALLENGE_START.getTime());
+  dt.setDate(dt.getDate() + d - 1);
+  return dt;
+}
+
+function fmtDate(d) {
+  var dt = dayToDate(d);
+  var WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return WD[dt.getDay()] + ', ' + dt.getDate() + ' ' + MO[dt.getMonth()] + ' ' + dt.getFullYear();
+}
+
+function fmtMins(m) {
+  if (m >= 60) return Math.floor(m/60) + 'h ' + (m%60) + 'm';
+  return m + 'm';
+}
+
+function pad(n) { return String(n).padStart(2,'0'); }
+
+// ── DAY STATUS (for grid colouring) ─────────────────────────
+// Returns: 'perfect'(8/8) | 'ok'(5-7) | 'part'(1-4) | 'zero'(logged but 0) | null (no data)
+function getDayStatus(d) {
+  var dm;
+  // For today, use the live in-memory doneMap (not yet saved to storage)
+  if (d === getTodayDay()) {
+    dm = doneMap;
+  } else {
+    var raw = lsGet(lsKey(d));
+    if (!raw) return null;
+    try { dm = JSON.parse(raw)._dm || {}; } catch(e) { return null; }
+  }
+  var done = Object.values(dm).filter(Boolean).length;
+  if (done === 8) return 'perfect';
+  if (done >= 5)  return 'ok';
+  if (done >= 1)  return 'part';
+  if (d === getTodayDay()) return null; // today with 0 = not started yet
+  return 'zero';
+}
+
+function isDayFrozen(d) { return lsGet('50k_freeze_' + d) === '1'; }
+
+// ── FREEZE SYSTEM (FIXED) ────────────────────────────────────
+function getFreezesUsed() {
+  return parseInt(lsGet('50k_freezes_used') || '0');
+}
+// Count 7+ task days as "completed" for earning freezes
+function getCompletedDayCount() {
+  var count = 0;
+  var today = getTodayDay();
+  for (var d = 1; d < today; d++) {
+    var s = getDayStatus(d);
+    if (s === 'perfect' || s === 'ok') count++;
+  }
+  return count;
+}
+function getFreezesEarned()    { return Math.floor(getCompletedDayCount() / 10); }
+function getFreezesAvailable() { return Math.max(0, getFreezesEarned() - getFreezesUsed()); }
+
+function useFreeze(forDay) {
+  var avail = getFreezesAvailable();
+  if (avail <= 0) { toast('❌ No freezes! Complete 10 days to earn one.'); return; }
+  lsSet('50k_freezes_used', getFreezesUsed() + 1);
+  lsSet('50k_freeze_' + forDay, '1');
+  toast('🧊 Freeze used for Day ' + forDay + '! ' + (avail-1) + ' left.');
+  updHdr(); buildGrid();
+}
+
+// ── AUTOSAVE ─────────────────────────────────────────────────
+var _asTmr = null;
+function scheduleSave() {
+  clearTimeout(_asTmr);
+  _asTmr = setTimeout(function() {
+    saveDay();
+    updRing();
+    updSummary();
+    buildGrid();
+    updHdr();
+  }, 800);
+}
+function attachAutoSave() {
+  document.querySelectorAll('input,textarea,select').forEach(function(el) {
+    el.addEventListener('input',  scheduleSave);
+    el.addEventListener('change', scheduleSave);
+  });
+}
+
+// ── SAVE / LOAD DAY ──────────────────────────────────────────
+function saveDay() {
+  var data = {};
+  document.querySelectorAll('[id^="f-"]').forEach(function(e) { data[e.id] = e.value; });
+  data._dm      = Object.assign({}, doneMap);
+  data._cks     = [];
+  document.querySelectorAll('.clist .ci').forEach(function(ci) {
+    data._cks.push(ci.classList.contains('ck'));
+  });
+  data._r1      = document.getElementById('rb1').classList.contains('rd');
+  data._r2      = document.getElementById('rb2').classList.contains('rd');
+  data._vbt     = getVbTicks();
+  data._timerElapsed = {}; // persist timer elapsed seconds per task
+  ['med','phy','pod','pat','dip'].forEach(function(id) {
+    data._timerElapsed[id] = getElapsed(id);
+  });
+  data._savedAt = new Date().toISOString();
+  lsSave(day, data);
+  var ts = data._savedAt ? new Date(data._savedAt) : null;
+  var el = document.getElementById('lastSaved');
+  if (el && ts) {
+    el.textContent = '✓ ' + ts.toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'});
+  }
+}
+
+function loadDay() {
+  // Stop any running timers (don't lose elapsed -- save first if needed)
+  Object.keys(timState).forEach(function(id) {
+    if (timState[id] && timState[id].running) {
+      // Pause and capture elapsed before reset
+      timState[id].elapsedAtPause += Math.floor((Date.now() - timState[id].startWall) / 1000);
+      timState[id].running = false;
+    }
+  });
+  timState = {};
+
+  // Reset UI
+  doneMap = {};
+  ['med','phy','aff','pod','trd','pat','dip','ngt'].forEach(function(id) {
+    var c = document.getElementById('rc-' + id);
+    if (c) { c.classList.remove('done','open','collapsed'); }
+    var btn = document.getElementById('btn-' + id);
+    if (btn) { btn.textContent = BTN_DEFAULT[id]; btn.classList.remove('undone-btn'); }
+  });
+  document.querySelectorAll('[id^="f-"]').forEach(function(e) { e.value = ''; });
+  document.querySelectorAll('.clist .ci').forEach(function(ci) {
+    ci.classList.remove('ck'); ci.querySelector('.ci-box').textContent = '';
+  });
+  var rb1 = document.getElementById('rb1');
+  var rb2 = document.getElementById('rb2');
+  if (rb1) { rb1.classList.remove('rd'); rb1.textContent = '☀️ Morning -- Read & Feel'; }
+  if (rb2) { rb2.classList.remove('rd'); rb2.textContent = '🌙 Evening -- Read & Feel'; }
+  document.querySelectorAll('.vb-item').forEach(function(el) { el.classList.remove('vb-read'); });
+
+  // Load from storage
+  var data = lsLoad(day) || {};
+
+  // Restore fields
+  document.querySelectorAll('[id^="f-"]').forEach(function(e) {
+    if (data[e.id] !== undefined) e.value = data[e.id];
+  });
+  var sl = document.getElementById('f-sleep'); if (sl && !sl.value) sl.value = '10:30 PM';
+
+  // Restore done states
+  doneMap = Object.assign({}, data._dm || {});
+  ['med','phy','aff','pod','trd','pat','dip','ngt'].forEach(function(id) {
+    var c   = document.getElementById('rc-' + id);
+    var btn = document.getElementById('btn-' + id);
+    if (doneMap[id]) {
+      if (c) { c.classList.add('done','collapsed'); }
+      if (btn) { btn.textContent = '↩ Undo -- ' + (TASK_CONFIG[id]||TASK_DEFAULTS[id]).name; btn.classList.add('undone-btn'); }
+    }
+  });
+
+  // Restore checkboxes
+  var cks = data._cks || [];
+  document.querySelectorAll('.clist .ci').forEach(function(ci, i) {
+    if (cks[i]) { ci.classList.add('ck'); ci.querySelector('.ci-box').textContent = '✓'; }
+  });
+
+  // Restore rep buttons
+  if (data._r1) { rb1.classList.add('rd'); rb1.textContent = '✓ Morning Done'; }
+  if (data._r2) { rb2.classList.add('rd'); rb2.textContent = '✓ Evening Done'; }
+
+  // Restore vision board
+  restoreVbTicks(data._vbt);
+
+  // Restore timers -- init all, then load saved elapsed
+  var timerIds  = ['med','phy','pod','pat','dip'];
+  var savedElap = data._timerElapsed || {};
+  timerIds.forEach(function(id) {
+    var cfg = TASK_CONFIG[id] || TASK_DEFAULTS[id];
+    var tg  = (cfg.mins || 15) * 60;
+    var elapsed = savedElap[id] || 0;
+    // Clamp to target
+    elapsed = Math.min(elapsed, tg);
+    timState[id] = { tg: tg, elapsedAtPause: elapsed, startWall: 0, running: false };
+    // Update display
+    var rem = tg - elapsed;
+    var disp = document.getElementById('t-' + id);
+    if (disp) {
+      disp.textContent = pad(Math.floor(rem/60)) + ':' + pad(rem%60);
+      disp.classList.remove('trun');
+      if (elapsed >= tg) disp.classList.add('tdone'); else disp.classList.remove('tdone');
+    }
+    var bar = document.getElementById('tb-' + id);
+    if (bar) bar.style.width = (elapsed/tg*100) + '%';
+  });
+
+  // Update UI
+  setDateDisplay();
+  updRing();
+  updSummary();
+  updCumHours();
+  updHdr();
+  buildGrid();
+  calcPnl(1); calcPnl(2);
+
+  // Past day banner
+  var today   = getTodayDay();
+  var banner  = document.getElementById('pastBanner');
+  var banTxt  = document.getElementById('pastBannerTxt');
+  var clearBtn = document.getElementById('clearDayBtn');
+  if (banner) {
+    if (day < today) {
+      banner.classList.remove('hidden');
+      if (banTxt) banTxt.textContent = '← Browsing Day ' + day + ' · ' + fmtDate(day);
+    } else {
+      banner.classList.add('hidden');
+    }
+  }
+  if (clearBtn) clearBtn.style.display = (day < today) ? 'block' : 'none';
+
+  // Nav buttons
+  var prevBtn = document.getElementById('navPrev');
+  var nextBtn = document.getElementById('navNext');
+  if (prevBtn) prevBtn.disabled = (day <= 1);
+  if (nextBtn) nextBtn.disabled = (day >= today);
+
+  // Day label in nav -- shows browsed day
+  var bl = document.getElementById('browseLbl');
+  if (bl) bl.textContent = 'DAY ' + day;
+
+  // Day eyebrow
+  var ey = document.getElementById('dayEyebrow');
+  if (ey) ey.textContent = (day < today) ? '← PAST DAY' : (day > today ? '⏳ FUTURE' : 'TODAY');
+
+  // Scroll to top
+  window.scrollTo({top:0, behavior:'smooth'});
+
+  // Day number + date
+  var bd = document.getElementById('bigDay'); if (bd) bd.textContent = day;
+  document.querySelectorAll('.db').forEach(function(b) { b.textContent = day; });
+
+  // Last saved display
+  var lsEl = document.getElementById('lastSaved');
+  if (lsEl) {
+    if (data._savedAt) {
+      var sv = new Date(data._savedAt);
+      lsEl.textContent = '✓ ' + sv.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    } else {
+      lsEl.textContent = day === today ? '' : 'NO DATA';
+    }
+  }
+}
+
+function setDateDisplay() {
+  var el = document.getElementById('dateStr');
+  if (el) el.textContent = fmtDate(day);
+}
+
+// ── RING / PROGRESS ──────────────────────────────────────────
+function updRing() {
+  var ids  = ['med','phy','aff','pod','trd','pat','dip','ngt'];
+  var done = ids.filter(function(k) { return doneMap[k]; }).length;
+  var pct  = Math.round(done / ids.length * 100);
+  var col  = pct === 100 ? '#2ECC8A' : pct >= 50 ? '#F5A623' : '#FF5F1F';
+
+  var rp = document.getElementById('rPct');
+  if (rp) { rp.textContent = pct + '%'; rp.style.color = col; }
+
+  var td = document.getElementById('taskD');
+  if (td) td.textContent = done + ' / ' + ids.length;
+
+  var ring = document.getElementById('ringCircle');
+  if (ring) {
+    var circ = 289.0;
+    ring.style.strokeDashoffset = circ - (circ * pct / 100);
+    ring.style.stroke = col;
+  }
+}
+
+// ── HEADER STATS (FIXED streak logic) ───────────────────────
+function updHdr() {
+  var today = getTodayDay();
+  document.getElementById('hLeft').textContent = Math.max(0, CHALLENGE_DAYS - today);
+
+  // Streak: count consecutive days backwards from yesterday (or today if it's done)
+  var streak = 0;
+  var checkFrom = (getDayStatus(today) !== null) ? today : today - 1;
+  for (var d = checkFrom; d >= 1; d--) {
+    var s = getDayStatus(d);
+    if (s === 'perfect' || s === 'ok' || s === 'part' || isDayFrozen(d)) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+  document.getElementById('hStreak').textContent = streak + '🔥';
+  document.getElementById('hFreeze').textContent  = getFreezesAvailable() + '🧊';
+
+  // Cumulative hours
+  var totalMin = calcTotalMinutes();
+  var h = Math.floor(totalMin / 60), m = totalMin % 60;
+  document.getElementById('hPct').textContent = (m > 0 ? h + 'h ' + m + 'm' : h + 'h');
+
+  // Progress bar -- % of days completed
+  var doneDays = 0;
+  for (var d2 = 1; d2 <= today; d2++) {
+    var s2 = getDayStatus(d2);
+    if (s2 === 'perfect' || s2 === 'ok') doneDays++;
+  }
+  var pct = Math.round(doneDays / CHALLENGE_DAYS * 100);
+  document.getElementById('gpf').style.width = Math.max(1, pct) + '%';
+
+  // Challenge progress (days elapsed %)
+  var elapsed = Math.min(100, Math.round((today - 1) / CHALLENGE_DAYS * 100));
+  var cpb = document.getElementById('challengeProgressBar');
+  var cpp = document.getElementById('challengeProgressPct');
+  if (cpb) cpb.style.width = elapsed + '%';
+  if (cpp) cpp.textContent = elapsed + '%';
+}
+
+function getDurations() {
+  return {
+    med: (TASK_CONFIG.med || TASK_DEFAULTS.med).mins || 15,
+    phy: (TASK_CONFIG.phy || TASK_DEFAULTS.phy).mins || 30,
+    pod: (TASK_CONFIG.pod || TASK_DEFAULTS.pod).mins || 40,
+    trd: 60,
+    pat: (TASK_CONFIG.pat || TASK_DEFAULTS.pat).mins || 30,
+    dip: (TASK_CONFIG.dip || TASK_DEFAULTS.dip).mins || 40
+  };
+}
+
+function calcTotalMinutes() {
+  var today = getTodayDay();
+  var dur   = getDurations();
+  var total = 0;
+  for (var d = 1; d <= today; d++) {
+    var data = (d === day) ? null : lsLoad(d); // today uses live doneMap
+    var dm   = data ? (data._dm || {}) : (d === today ? doneMap : {});
+    if (!data && d !== today) continue;
+    Object.keys(dur).forEach(function(k) { if (dm[k]) total += dur[k]; });
+    // For today, also add live timer elapsed
+    if (d === today) {
+      ['med','phy','pod','pat','dip'].forEach(function(id) {
+        if (!doneMap[id]) { // only count timer if not already counted via done flag
+          total += Math.floor(getElapsed(id) / 60);
+        }
+      });
+    }
+  }
+  return total;
+}
+
+// ── SUMMARY CARD ─────────────────────────────────────────────
+var _sumTab = 'today';
+
+function setSumTab(tab, btn) {
+  _sumTab = tab;
+  document.querySelectorAll('.sum-tab').forEach(function(b) { b.classList.remove('sum-tab-act'); });
+  btn.classList.add('sum-tab-act');
+  var lbl = document.getElementById('sumTabLabel');
+  if (lbl) lbl.textContent = tab==='today' ? 'TODAY' : tab==='week' ? 'THIS WEEK' : 'ALL ' + CHALLENGE_DAYS + ' DAYS';
+  updSummary();
+}
+
+function updSummary() {
+  var today = getTodayDay();
+  var dur   = getDurations();
+  var fmtM  = fmtMins;
+
+  if (_sumTab === 'today') {
+    // Live today data
+    var ids = ['med','phy','pod','pat','dip'];
+    var total = 0;
+    ids.forEach(function(id) {
+      var elapsed = Math.round(getElapsed(id) / 60);
+      var m = elapsed > 0 ? elapsed : (doneMap[id] ? (dur[id] || 0) : 0);
+      var el = document.getElementById('s-' + id);
+      if (el) el.textContent = fmtM(m);
+      total += m;
+    });
+    var trdMin = doneMap['trd'] ? 60 : 0;
+    var sTrd = document.getElementById('s-trd'); if (sTrd) sTrd.textContent = fmtM(trdMin);
+    total += trdMin;
+    var sDays = document.getElementById('s-days'); if (sDays) sDays.textContent = Object.values(doneMap).filter(Boolean).length;
+    var sTrades = document.getElementById('s-trades'); if (sTrades) sTrades.textContent = '--';
+    var sNotes = document.getElementById('s-notes'); if (sNotes) sNotes.textContent = '--';
+    var pt = document.getElementById('prodT'); if (pt) pt.textContent = fmtM(total);
+    var tv = document.getElementById('totV'); if (tv) tv.textContent = fmtM(calcTotalMinutes());
+    var tf = document.getElementById('totF');
+    if (tf) tf.style.width = Math.min(100, Math.round(calcTotalMinutes() / (DAILY_TARGET * CHALLENGE_DAYS) * 100)) + '%';
+    return;
+  }
+
+  var fromDay = 1, toDay = today;
+  if (_sumTab === 'week') fromDay = Math.max(1, today - 6);
+
+  var totals = { med:0, phy:0, pod:0, trd:0, pat:0, dip:0 };
+  var daysDone = 0, tradeCount = 0, noteCount = 0;
+
+  for (var d = fromDay; d <= toDay; d++) {
+    var data = (d === today) ? { _dm: doneMap } : lsLoad(d);
+    if (!data) continue;
+    var dm = data._dm || {};
+    if (dm.med) totals.med += dur.med;
+    if (dm.phy) totals.phy += dur.phy;
+    if (dm.pod) totals.pod += dur.pod;
+    if (dm.trd) { totals.trd += 60; tradeCount += ((data['f-t1en']||data['f-t1s'])?1:0) + ((data['f-t2en']||data['f-t2s'])?1:0); }
+    if (dm.pat) totals.pat += dur.pat;
+    if (dm.dip) totals.dip += dur.dip;
+    var tasksDone = Object.values(dm).filter(Boolean).length;
+    if (tasksDone >= 4) daysDone++;
+    ['f-med-n','f-phy-n','f-pod-k','f-pat-k','f-dip-k','f-g1','f-imp1'].forEach(function(k){
+      if (data[k] && data[k].trim()) noteCount++;
+    });
+  }
+
+  Object.keys(totals).forEach(function(id) {
+    var el = document.getElementById('s-' + id);
+    if (el) el.textContent = fmtM(totals[id]);
+  });
+  var sDays2 = document.getElementById('s-days'); if (sDays2) sDays2.textContent = daysDone;
+  var sTr2 = document.getElementById('s-trades'); if (sTr2) sTr2.textContent = tradeCount;
+  var sN2 = document.getElementById('s-notes'); if (sN2) sN2.textContent = noteCount;
+  var total2 = Object.values(totals).reduce(function(a,b){ return a+b; }, 0);
+  var tv2 = document.getElementById('totV'); if (tv2) tv2.textContent = fmtM(total2);
+  var tf2 = document.getElementById('totF');
+  var tgt2 = DAILY_TARGET * (_sumTab==='all' ? toDay : Math.min(7, toDay-fromDay+1));
+  if (tf2) tf2.style.width = Math.min(100, Math.round(total2 / tgt2 * 100)) + '%';
+}
+
+function updCumHours() {
+  var total = calcTotalMinutes();
+  var tv = document.getElementById('totV');
+  if (tv) tv.textContent = fmtMins(total);
+  var tf = document.getElementById('totF');
+  if (tf) tf.style.width = Math.min(100, Math.round(total / (DAILY_TARGET * CHALLENGE_DAYS) * 100)) + '%';
+}
+
+// ── GRID ─────────────────────────────────────────────────────
+function buildGrid() {
+  var g = document.getElementById('dgrid');
+  if (!g) return;
+  g.innerHTML = '';
+  var today = getTodayDay();
+  for (var d = 1; d <= CHALLENGE_DAYS; d++) {
+    var el = document.createElement('div');
+    el.className = 'dot';
+    if (d === day) el.classList.add('viewing');
+    if (d < today) {
+      if (isDayFrozen(d)) el.classList.add('frozen');
+      else el.classList.add(getDayStatus(d) || 'zero');
+    } else if (d === today) {
+      // Today: show actual completion colour, ring indicates it's current day
+      var todayStatus = getDayStatus(today);
+      if (todayStatus === 'perfect') {
+        el.classList.add('perfect');
+      } else if (todayStatus === 'ok') {
+        el.classList.add('ok');
+      } else if (todayStatus === 'part') {
+        el.classList.add('part');
+      } else {
+        el.classList.add('today-d'); // no tasks yet -- fire orange
+      }
+      el.classList.add('today-ring'); // always add ring for current day
+    } else {
+      el.classList.add('future');
+    }
+    el.title = 'Day ' + d + (d < today && !getDayStatus(d) ? ' -- missed' : '');
+    (function(n) {
+      el.onclick = function() {
+        if (n > getTodayDay()) { toast('⏳ Day ' + n + ' hasn\'t started yet!'); return; }
+        saveDay();
+        day = n;
+        loadDay();
+      };
+      // Freeze option for missed past days
+      if (n < today && !getDayStatus(n) && !isDayFrozen(n)) {
+        el.title = 'Day ' + n + ' missed -- long press to freeze';
+        var pressTimer;
+        el.addEventListener('touchstart', function(e) {
+          pressTimer = setTimeout(function() {
+            askConfirm('Use Freeze for Day ' + n + '?',
+              'This will protect your streak for Day ' + n + '.',
+              function() { useFreeze(n); });
+          }, 600);
+        });
+        el.addEventListener('touchend', function() { clearTimeout(pressTimer); });
+      }
+    })(d);
+    g.appendChild(el);
+  }
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────
+function chDay(delta) {
+  var today = getTodayDay();
+  var next  = day + delta;
+  if (next > today) { toast('⏳ Day ' + next + ' hasn\'t started yet!'); return; }
+  if (next < 1)     { return; }
+  saveDay();
+  day = next;
+  loadDay();
+}
+
+function goToday() {
+  saveDay();
+  day = getTodayDay();
+  loadDay();
+  toast('📅 Jumped to Day ' + day + ' -- Today');
+}
+
+// ── TOGGLE CARD OPEN/CLOSE ───────────────────────────────────
+function tog(id) {
+  var c = document.getElementById('rc-' + id);
+  if (!c) return;
+  if (c.classList.contains('done')) {
+    c.classList.toggle('collapsed');
+  } else {
+    c.classList.toggle('open');
+  }
+}
+
+// ── MARK DONE / UNDO ─────────────────────────────────────────
+function done(id) {
+  var card = document.getElementById('rc-' + id);
+  var btn  = document.getElementById('btn-' + id);
+  var cfg  = TASK_CONFIG[id] || TASK_DEFAULTS[id];
+
+  if (doneMap[id]) {
+    // Undo
+    doneMap[id] = false;
+    if (card) { card.classList.remove('done','collapsed'); }
+    if (btn)  { btn.textContent = BTN_DEFAULT[id]; btn.classList.remove('undone-btn'); }
+    toast('↩ ' + cfg.name + ' unmarked');
+  } else {
+    // Mark complete
+    doneMap[id] = true;
+    if (card) { card.classList.add('done','collapsed'); }
+    if (btn)  { btn.textContent = '↩ Undo -- ' + cfg.name; btn.classList.add('undone-btn'); }
+    // Freeze milestone check
+    var completedNow = getCompletedDayCount();
+    if (completedNow > 0 && completedNow % 10 === 0) {
+      setTimeout(function() { toast('🧊 FREEZE UNLOCKED! ' + completedNow + ' days done!'); }, 1200);
+    } else {
+      toast('✓ ' + cfg.name + ' logged -- Day ' + day + '!');
+    }
+  }
+  saveDay(); updRing(); updSummary(); updCumHours(); buildGrid(); updHdr();
+}
+
+// ── CHECKLIST ────────────────────────────────────────────────
+function ck(el) {
+  el.classList.toggle('ck');
+  el.querySelector('.ci-box').textContent = el.classList.contains('ck') ? '✓' : '';
+  scheduleSave();
+}
+
+// ── REP BUTTONS ──────────────────────────────────────────────
+function rep(n) {
+  var btn = document.getElementById('rb' + n);
+  if (!btn) return;
+  btn.classList.add('rd');
+  btn.textContent = '✓ Round ' + n + ' Done';
+  toast('Round ' + n + ' spoken! 💪');
+  scheduleSave();
+}
+
+// ── VISION BOARD TICKS ───────────────────────────────────────
+function vbTick(el) { el.classList.toggle('vb-read'); scheduleSave(); }
+function getVbTicks() {
+  var states = [];
+  document.querySelectorAll('.vb-item').forEach(function(el) { states.push(el.classList.contains('vb-read')); });
+  return states;
+}
+function restoreVbTicks(states) {
+  if (!states || !states.length) return;
+  document.querySelectorAll('.vb-item').forEach(function(el, i) { el.classList.toggle('vb-read', !!states[i]); });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  TIMER ENGINE -- Wall-clock based, iOS background safe
+// ═══════════════════════════════════════════════════════════
+var audioCtx    = null;
+var masterTick  = null;
+
+function getAudio() {
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){}
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playAlarm() {
+  var ctx = getAudio();
+  if (!ctx) return;
+  [0, 0.35, 0.70].forEach(function(t) {
+    var osc  = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880,  ctx.currentTime + t);
+    osc.frequency.setValueAtTime(1100, ctx.currentTime + t + 0.1);
+    gain.gain.setValueAtTime(0,   ctx.currentTime + t);
+    gain.gain.linearRampToValueAtTime(1.0, ctx.currentTime + t + 0.02);
+    gain.gain.setValueAtTime(1.0, ctx.currentTime + t + 0.18);
+    gain.gain.linearRampToValueAtTime(0,   ctx.currentTime + t + 0.30);
+    osc.start(ctx.currentTime + t);
+    osc.stop( ctx.currentTime + t + 0.32);
+  });
+}
+
+function startMasterTick() {
+  // Always clear and restart -- fixes the "stopped then won't restart" bug
+  if (masterTick) clearInterval(masterTick);
+  masterTick = null;
+  var anyActive = Object.values(timState).some(function(ts) { return ts && ts.running; });
+  if (!anyActive) return;
+  masterTick = setInterval(tickAll, 500);
+}
+
+function tickAll() {
+  var anyActive = false;
+  Object.keys(timState).forEach(function(id) {
+    var ts = timState[id];
+    if (!ts || !ts.running) return;
+    anyActive = true;
+    var elapsed = ts.elapsedAtPause + Math.floor((Date.now() - ts.startWall) / 1000);
+    var rem     = ts.tg - elapsed;
+    var disp    = document.getElementById('t-' + id);
+    var bar     = document.getElementById('tb-' + id);
+    if (rem <= 0) {
+      ts.running = false;
+      ts.elapsedAtPause = ts.tg;
+      if (disp) { disp.textContent = '00:00'; disp.classList.remove('trun'); disp.classList.add('tdone'); }
+      if (bar)  bar.style.width = '100%';
+      playAlarm();
+      toast('🎯 ' + id.toUpperCase() + ' timer done!');
+      updSummary();
+    } else {
+      if (disp) disp.textContent = pad(Math.floor(rem/60)) + ':' + pad(rem%60);
+      if (bar)  bar.style.width  = Math.min(100, elapsed / ts.tg * 100) + '%';
+    }
+  });
+  updSummary();
+  if (!anyActive) { clearInterval(masterTick); masterTick = null; }
+}
+
+// Re-sync when coming back from background (iOS)
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) return;
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  // Instant re-sync all running timers
+  Object.keys(timState).forEach(function(id) {
+    var ts = timState[id];
+    if (!ts || !ts.running) return;
+    var elapsed = ts.elapsedAtPause + Math.floor((Date.now() - ts.startWall) / 1000);
+    var rem = ts.tg - elapsed;
+    var disp = document.getElementById('t-' + id);
+    var bar  = document.getElementById('tb-' + id);
+    if (rem <= 0) {
+      ts.running = false; ts.elapsedAtPause = ts.tg;
+      if (disp) { disp.textContent = '00:00'; disp.classList.remove('trun'); disp.classList.add('tdone'); }
+      if (bar)  bar.style.width = '100%';
+      playAlarm(); toast('🎯 ' + id.toUpperCase() + ' finished while away!');
+    } else {
+      if (disp) disp.textContent = pad(Math.floor(rem/60)) + ':' + pad(rem%60);
+      if (bar)  bar.style.width = Math.min(100, elapsed/ts.tg*100) + '%';
+    }
+  });
+  startMasterTick();
+});
+
+function getElapsed(id) {
+  var ts = timState[id];
+  if (!ts) return 0;
+  if (ts.running) return ts.elapsedAtPause + Math.floor((Date.now() - ts.startWall) / 1000);
+  return ts.elapsedAtPause;
+}
+
+function tS(id) {
+  getAudio(); // unlock on first tap
+  var ts = timState[id];
+  if (!ts) {
+    var cfg = TASK_CONFIG[id] || TASK_DEFAULTS[id];
+    ts = timState[id] = { tg: (cfg.mins||15)*60, elapsedAtPause:0, startWall:0, running:false };
+  }
+  if (ts.running) return;
+  if (ts.elapsedAtPause >= ts.tg) return; // already finished
+  ts.startWall = Date.now();
+  ts.running   = true;
+  var disp = document.getElementById('t-' + id);
+  if (disp) { disp.classList.add('trun'); disp.classList.remove('tdone'); }
+  startMasterTick(); // always restarts cleanly
+}
+
+function tP(id) {
+  var ts = timState[id];
+  if (!ts || !ts.running) return;
+  ts.elapsedAtPause += Math.floor((Date.now() - ts.startWall) / 1000);
+  ts.running = false;
+  var disp = document.getElementById('t-' + id);
+  if (disp) disp.classList.remove('trun');
+}
+
+function tR(id) {
+  tP(id);
+  var cfg = TASK_CONFIG[id] || TASK_DEFAULTS[id];
+  timState[id] = { tg: (cfg.mins||15)*60, elapsedAtPause:0, startWall:0, running:false };
+  var disp = document.getElementById('t-' + id);
+  if (disp) { disp.textContent = pad(cfg.mins||15) + ':00'; disp.classList.remove('trun','tdone'); }
+  var bar = document.getElementById('tb-' + id);
+  if (bar) bar.style.width = '0%';
+}
+
+// ── P&L CALCULATOR ───────────────────────────────────────────
+function calcPnl(n) {
+  var en  = parseFloat(((document.getElementById('f-t'+n+'en')||{}).value||'').replace(/[^0-9.-]/g,''));
+  var ex  = parseFloat(((document.getElementById('f-t'+n+'ex')||{}).value||'').replace(/[^0-9.-]/g,''));
+  var qty = parseFloat(((document.getElementById('f-t'+n+'qty')||{}).value||'1').replace(/[^0-9.]/g,'')) || 1;
+  var box = document.getElementById('pnl' + n);
+  if (!box) return;
+  if (isNaN(en) || isNaN(ex)) { box.textContent = '--'; box.style.color = 'var(--muted)'; }
+  else {
+    var raw   = (ex - en) * qty;
+    var sign  = raw >= 0 ? '+' : '';
+    var color = raw > 0 ? '#2ECC8A' : raw < 0 ? '#FF3B5C' : 'var(--gold)';
+    box.textContent = sign + '₹' + raw.toLocaleString('en-IN',{maximumFractionDigits:2});
+    box.style.color = color;
+  }
+  updateDayTotal();
+}
+
+function updateDayTotal() {
+  var getPnl = function(n) {
+    var en  = parseFloat(((document.getElementById('f-t'+n+'en')||{}).value||'').replace(/[^0-9.-]/g,''));
+    var ex  = parseFloat(((document.getElementById('f-t'+n+'ex')||{}).value||'').replace(/[^0-9.-]/g,''));
+    var qty = parseFloat(((document.getElementById('f-t'+n+'qty')||{}).value||'1').replace(/[^0-9.]/g,'')) || 1;
+    if (isNaN(en) || isNaN(ex)) return null;
+    return (ex - en) * qty;
+  };
+  var p1 = getPnl(1), p2 = getPnl(2);
+  var box = document.getElementById('dayPnlBox');
+  if (!box) return;
+  if (p1 === null && p2 === null) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  var total = (p1||0) + (p2||0);
+  var color = total > 0 ? '#2ECC8A' : total < 0 ? '#FF3B5C' : 'var(--gold)';
+  var amt = document.getElementById('dayPnlAmt');
+  if (amt) { amt.textContent = (total>=0?'+':'') + '₹' + total.toLocaleString('en-IN',{maximumFractionDigits:2}); amt.style.color = color; }
+  var t1l = document.getElementById('dayPnlT1');
+  var t2l = document.getElementById('dayPnlT2');
+  if (t1l && p1!==null) { t1l.textContent='T1: '+(p1>=0?'+':'')+'₹'+p1.toLocaleString('en-IN',{maximumFractionDigits:2}); t1l.style.color=p1>0?'#2ECC8A':p1<0?'#FF3B5C':'var(--gold)'; }
+  if (t2l && p2!==null) { t2l.textContent='T2: '+(p2>=0?'+':'')+'₹'+p2.toLocaleString('en-IN',{maximumFractionDigits:2}); t2l.style.color=p2>0?'#2ECC8A':p2<0?'#FF3B5C':'var(--gold)'; }
+}
+
+// ── TOAST ────────────────────────────────────────────────────
+var _toastTmr;
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(_toastTmr);
+  _toastTmr = setTimeout(function() { el.classList.remove('show'); }, 2800);
+}
+
+// ── CONFIRM DIALOG (replaces iOS-broken confirm()) ───────────
+function askConfirm(title, msg, callback) {
+  document.getElementById('confirmTitle').textContent  = title;
+  document.getElementById('confirmMsg').textContent    = msg;
+  _confirmCallback = callback;
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+function confirmOk() {
+  document.getElementById('confirmOverlay').classList.remove('open');
+  if (_confirmCallback) { _confirmCallback(); _confirmCallback = null; }
+}
+function confirmCancel() {
+  document.getElementById('confirmOverlay').classList.remove('open');
+  _confirmCallback = null;
+}
+
+// ── THEME TOGGLE ─────────────────────────────────────────────
+var _isDayMode = false;
+function toggleTheme() {
+  _isDayMode = !_isDayMode;
+  document.body.classList.toggle('day-mode', _isDayMode);
+  document.getElementById('themeBtn').textContent = _isDayMode ? '🌙 Night' : '☀️ Day';
+  lsSet('50k_theme', _isDayMode ? 'day' : 'night');
+}
+
+// ── SETTINGS ─────────────────────────────────────────────────
+function openSettingsDeferred() { setTimeout(showSettings, 0); }
+
+function showSettings() {
+  document.getElementById('settingsModal').classList.add('open');
+  var d   = CHALLENGE_START;
+  var ymd = d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+  document.getElementById('set-startDate').value = ymd;
+  document.getElementById('set-days').value      = CHALLENGE_DAYS;
+  document.getElementById('set-name').value      = document.getElementById('brandName').textContent.trim();
+  document.getElementById('set-target').value    = DAILY_TARGET;
+  renderTaskEditor();
+}
+
+function closeSettings() {
+  document.getElementById('settingsModal').classList.remove('open');
+}
+
+function renderTaskEditor() {
+  var list  = document.getElementById('taskEditorList');
+  if (!list) return;
+  var icons = {med:'🧘',phy:'🏀',aff:'🌟',pod:'🎧',trd:'📊',pat:'🔬',dip:'🎓',ngt:'🌙'};
+  var hasMins = ['med','phy','pod','pat','dip'];
+  list.innerHTML = '';
+  Object.keys(TASK_DEFAULTS).forEach(function(id) {
+    var cfg = TASK_CONFIG[id] || TASK_DEFAULTS[id];
+    var minsHtml = hasMins.indexOf(id) !== -1 ?
+      '<div style="display:flex;align-items:center;gap:6px;margin-top:6px;">' +
+      '<span style="font-family:JetBrains Mono,monospace;font-size:10px;color:var(--muted);">⏱ MINS</span>' +
+      '<input type="number" id="te-mins-'+id+'" value="'+cfg.mins+'" min="1" max="240" style="width:60px;background:var(--bg);border:1px solid var(--border2);border-radius:4px;color:var(--gold);font-family:JetBrains Mono,monospace;font-size:12px;padding:4px 8px;text-align:center;"></div>' : '';
+    list.innerHTML +=
+      '<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">' +
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">' +
+      '<span style="font-size:14px;">' + icons[id] + '</span>' +
+      '<span style="font-family:JetBrains Mono,monospace;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">' + id + '</span></div>' +
+      '<input type="text" id="te-name-'+id+'" value="'+cfg.name+'" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:JetBrains Mono,monospace;font-size:12px;padding:6px 10px;box-sizing:border-box;margin-bottom:4px;">' +
+      '<input type="text" id="te-sub-'+id+'" value="'+cfg.sub+'" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;color:var(--muted);font-family:JetBrains Mono,monospace;font-size:11px;padding:5px 10px;box-sizing:border-box;">' +
+      minsHtml + '</div>';
+  });
+}
+
+function applyTaskConfig() {
+  Object.keys(TASK_DEFAULTS).forEach(function(id) {
+    var cfg = TASK_CONFIG[id] || TASK_DEFAULTS[id];
+    // Update card title
+    var titleEl = document.querySelector('#rc-' + id + ' .rc-title');
+    if (titleEl) {
+      var tagEl = titleEl.querySelector('.tag');
+      if (tagEl) {
+        var tn = titleEl.firstChild;
+        if (tn && tn.nodeType === 3) tn.textContent = cfg.name + ' ';
+        else titleEl.insertBefore(document.createTextNode(cfg.name + ' '), tagEl);
+      } else {
+        titleEl.textContent = cfg.name;
+      }
+    }
+    // Update subtitle
+    var subEl = document.querySelector('#rc-' + id + ' .rc-sub');
+    if (subEl && !subEl.querySelector('.db')) subEl.textContent = cfg.sub;
+    // Update timer label
+    var tlEl = document.getElementById('tl-' + id);
+    if (tlEl && cfg.mins) tlEl.textContent = 'Target -- ' + cfg.mins + ' minutes';
+    // Update button default
+    BTN_DEFAULT[id] = '✓ Mark ' + cfg.name + ' Complete';
+  });
+  BTN_DEFAULT['trd'] = '✓ Both Trades Logged';
+  BTN_DEFAULT['ngt'] = '✓ Night Rituals Complete -- Rest Well 🌙';
+}
+
+function saveSettings() {
+  var startVal  = document.getElementById('set-startDate').value;
+  var daysVal   = parseInt(document.getElementById('set-days').value)   || 100;
+  var nameVal   = document.getElementById('set-name').value.trim()       || '50K CHALLENGE';
+  var targetVal = parseInt(document.getElementById('set-target').value)  || 195;
+  if (!startVal) { toast('⚠️ Please set a start date'); return; }
+
+  // Save task config from editor (single pass -- no duplicate logic)
+  var hasMins = ['med','phy','pod','pat','dip'];
+  Object.keys(TASK_DEFAULTS).forEach(function(id) {
+    var nameEl = document.getElementById('te-name-' + id);
+    var subEl  = document.getElementById('te-sub-'  + id);
+    var minsEl = document.getElementById('te-mins-' + id);
+    TASK_CONFIG[id] = {
+      name: (nameEl && nameEl.value.trim()) || TASK_DEFAULTS[id].name,
+      sub:  (subEl  && subEl.value.trim())  || TASK_DEFAULTS[id].sub,
+      mins: (minsEl && hasMins.indexOf(id) !== -1) ? (parseInt(minsEl.value) || TASK_DEFAULTS[id].mins) : TASK_DEFAULTS[id].mins
+    };
+  });
+  lsSet('50k_task_config', JSON.stringify(TASK_CONFIG));
+
+  // Save core settings
+  lsSet('50k_settings', JSON.stringify({ startDate:startVal, days:daysVal, name:nameVal, target:targetVal }));
+  CHALLENGE_START = new Date(startVal + 'T00:00:00');
+  CHALLENGE_DAYS  = daysVal;
+  DAILY_TARGET    = targetVal;
+
+  // Update brand
+  document.getElementById('brandName').textContent = nameVal;
+  var end = new Date(CHALLENGE_START.getTime()); end.setDate(end.getDate() + daysVal - 1);
+  var MO  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('brandSub').textContent = CHALLENGE_START.getDate()+' '+MO[CHALLENGE_START.getMonth()]+' → '+end.getDate()+' '+MO[end.getMonth()]+' '+end.getFullYear();
+  var gl = document.getElementById('gridLabel'); if (gl) gl.textContent = daysVal + ' Day Progress';
+  var ts = document.getElementById('totSub'); if (ts) ts.textContent = 'Challenge Target: '+daysVal+' × '+Math.floor(targetVal/60)+'h '+(targetVal%60)+'m';
+
+  closeSettings(); // close immediately for snappy feel
+  setTimeout(function() {
+    applyTaskConfig();
+    day = getTodayDay();
+    loadDay(); buildGrid(); updHdr();
+    // Reset timer targets to new config
+    ['med','phy','pod','pat','dip'].forEach(function(id) { tR(id); });
+    toast('✓ Settings saved!');
+  }, 50);
+}
+
+// ── DESTRUCTIVE ACTIONS (with confirmation) ──────────────────
+function askNuclearClear() {
+  askConfirm('Clear All Past Day Data?',
+    'This wipes all past days except today. Your data cannot be recovered.',
+    function() { nuclearClearPast(); });
+}
+function askClearAll() {
+  askConfirm('Reset Everything?',
+    'This deletes all 100 days of data and cannot be undone.',
+    function() { clearAllData(); });
+}
+
+function nuclearClearPast() {
+  var today   = getTodayDay();
+  var cleared = 0;
+  for (var d = 1; d <= 365; d++) {
+    if (d === today) continue;
+    if (lsGet(lsKey(d)) !== null) { lsDel(lsKey(d)); cleared++; }
+    lsDel('50k_freeze_' + d);
+  }
+  closeSettings();
+  setTimeout(function() { loadDay(); buildGrid(); updHdr(); toast('🧹 Cleared ' + cleared + ' past days.'); }, 60);
+}
+
+function clearAllData() {
+  for (var d = 1; d <= 365; d++) { lsDel(lsKey(d)); lsDel('50k_freeze_' + d); }
+  lsDel('50k_freezes_used');
+  doneMap = {};
+  closeSettings();
+  loadDay(); buildGrid(); updHdr();
+  toast('♻️ All data cleared. Fresh start!');
+}
+
+function clearThisDay() {
+  var today = getTodayDay();
+  if (day >= today) { toast('Cannot clear today or future days'); return; }
+  askConfirm('Clear Day ' + day + '?',
+    'This removes all data for ' + fmtDate(day) + '. Cannot be undone.',
+    function() {
+      lsDel(lsKey(day)); lsDel('50k_freeze_' + day);
+      loadDay(); buildGrid(); updHdr(); toast('🗑 Day ' + day + ' cleared');
+    });
+}
+
+// ── LOGS PANEL ───────────────────────────────────────────────
+var _logFilter = 'all';
+
+function showLogs() {
+  saveDay();
+  document.getElementById('logsPanel').style.display = 'block';
+  document.querySelectorAll('.main > *:not(#logsPanel)').forEach(function(el) { el.style.display = 'none'; });
+  renderLogs();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function hideLogs() {
+  document.getElementById('logsPanel').style.display = 'none';
+  document.querySelectorAll('.main > *:not(#logsPanel)').forEach(function(el) { el.style.display = ''; });
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function setLogFilter(f, btn) {
+  _logFilter = f;
+  document.querySelectorAll('.lf-btn').forEach(function(b) { b.classList.remove('lf-act'); });
+  btn.classList.add('lf-act');
+  renderLogs();
+}
+
+function lv(data, key) { return data && (data[key]||'').trim() ? data[key].trim() : ''; }
+function eh(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderLogs() {
+  var container = document.getElementById('logsList');
+  container.innerHTML = '';
+  var today = getTodayDay();
+  var shown = 0;
+  for (var d = today; d >= 1; d--) {
+    var data  = lsLoad(d);
+    var dm    = data && data._dm ? data._dm : {};
+    var tdone = Object.values(dm).filter(Boolean).length;
+    var hasTrade = data && (lv(data,'f-t1en')||lv(data,'f-t1s')||lv(data,'f-t2en')||lv(data,'f-t2s'));
+    var frozen   = isDayFrozen(d);
+    if (!data && !frozen) continue;
+    if (_logFilter==='done' && tdone < 4 && !frozen) continue;
+    if (_logFilter==='part' && (tdone===0 || tdone>=4)) continue;
+    if (_logFilter==='trade' && !hasTrade) continue;
+    shown++;
+    var statusCol = tdone>=6 ? '#2ECC8A' : tdone>0 ? '#F5A623' : '#4A6278';
+    if (frozen) statusCol = '#00D4FF';
+    var rituals = [{id:'med',ic:'🧘'},{id:'phy',ic:'🏀'},{id:'aff',ic:'🌟'},{id:'pod',ic:'🎧'},{id:'trd',ic:'📊'},{id:'pat',ic:'🔬'},{id:'dip',ic:'🎓'},{id:'ngt',ic:'🌙'}];
+    var ritRow  = rituals.map(function(r) {
+      return '<span style="font-size:12px;opacity:'+(dm[r.id]?'1':'.25')+'">'+r.ic+'</span>';
+    }).join('');
+    var row = document.createElement('div');
+    row.className = 'log-row';
+    row.innerHTML =
+      '<div class="log-row-hdr" onclick="toggleLog(this)">' +
+      '<span style="font-family:JetBrains Mono,monospace;font-size:12px;color:var(--muted);width:42px;flex-shrink:0">D'+d+'</span>' +
+      '<span style="font-size:11px;color:var(--text2);flex:1">'+fmtDate(d)+'</span>' +
+      '<span style="display:flex;gap:3px;margin-right:8px">'+ritRow+'</span>' +
+      '<span style="font-family:JetBrains Mono,monospace;font-size:12px;color:'+statusCol+'">'+tdone+'/8</span>' +
+      '<span style="font-size:12px;color:var(--muted);margin-left:8px">▼</span></div>' +
+      '<div class="log-row-body">' + buildLogBody(d, data, dm) + '</div>';
+    container.appendChild(row);
+  }
+  if (!shown) container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted);font-size:12px">No days match this filter yet.</div>';
+}
+
+function buildLogBody(d, data, dm) {
+  if (!data) return '<div style="padding:8px;color:var(--muted);font-size:11px">No data recorded.</div>';
+  var html = '';
+  var f = function(label, val) { return '<div class="log-field"><div class="lbl">'+label+'</div><div class="val">'+eh(val)+'</div></div>'; };
+  if (lv(data,'f-med-n')) html += f('🧘 Meditation Note', lv(data,'f-med-n'));
+  if (lv(data,'f-phy-a')||lv(data,'f-phy-n')) html += f('🏀 Physical', (lv(data,'f-phy-a')||'')+(lv(data,'f-phy-n')?' -- '+lv(data,'f-phy-n'):''));
+  if (lv(data,'f-pod-n')||lv(data,'f-pod-k')) html += f('🎧 Podcast', (lv(data,'f-pod-n')||'')+(lv(data,'f-pod-k')?' · '+lv(data,'f-pod-k'):''));
+  [1,2].forEach(function(n) {
+    var en=lv(data,'f-t'+n+'en'),ex=lv(data,'f-t'+n+'ex'),s=lv(data,'f-t'+n+'s'),
+        sl=lv(data,'f-t'+n+'sl'),tg=lv(data,'f-t'+n+'tg'),
+        g=lv(data,'f-t'+n+'gd'),b=lv(data,'f-t'+n+'bd'),l=lv(data,'f-t'+n+'ln');
+    if (en||s) {
+      var diff = (parseFloat(ex)||0)-(parseFloat(en)||0);
+      var rc   = diff>0?'#2ECC8A':diff<0?'#FF3B5C':'#4A6278';
+      html += '<div class="log-trade"><div class="log-trade-title">TRADE '+n+
+        '<span style="color:'+rc+'">'+(diff>0?'WIN ↑':diff<0?'LOSS ↓':'--')+'</span></div>'+
+        '<div class="log-grid">'+
+        (en?'<div class="log-field"><div class="lbl">Entry</div><div class="val">'+eh(en)+'</div></div>':'')+
+        (ex?'<div class="log-field"><div class="lbl">Exit</div><div class="val" style="color:'+rc+'">'+eh(ex)+'</div></div>':'')+
+        (sl?'<div class="log-field"><div class="lbl">SL</div><div class="val">'+eh(sl)+'</div></div>':'')+
+        (tg?'<div class="log-field"><div class="lbl">Target</div><div class="val">'+eh(tg)+'</div></div>':'')+
+        '</div>'+
+        (s?'<div class="log-field"><div class="lbl">Setup</div><div class="val">'+eh(s)+'</div></div>':'')+
+        (g?'<div class="log-field"><div class="lbl">✅ Good</div><div class="val">'+eh(g)+'</div></div>':'')+
+        (b?'<div class="log-field"><div class="lbl">❌ Bad</div><div class="val">'+eh(b)+'</div></div>':'')+
+        (l?'<div class="log-field"><div class="lbl">📚 Learning</div><div class="val">'+eh(l)+'</div></div>':'')+
+        '</div>';
+    }
+  });
+  if (lv(data,'f-pat-n')||lv(data,'f-pat-k')) html += f('🔬 Pattern', (lv(data,'f-pat-n')||'')+(lv(data,'f-pat-k')?' -- '+lv(data,'f-pat-k'):''));
+  if (lv(data,'f-dip-n')||lv(data,'f-dip-k')) html += f('🎓 Diploma', (lv(data,'f-dip-n')||'')+(lv(data,'f-dip-k')?' -- '+lv(data,'f-dip-k'):''));
+  var gs = [lv(data,'f-g1'),lv(data,'f-g2'),lv(data,'f-g3')].filter(Boolean);
+  if (gs.length) html += f('🙏 Gratitudes', gs.map(function(x,i){ return (i+1)+'. '+x; }).join('\n'));
+  var im = [lv(data,'f-imp1'),lv(data,'f-imp2'),lv(data,'f-imp3')].filter(Boolean);
+  if (im.length) html += f('↗ Improve Tomorrow', im.join('\n'));
+  var co = [lv(data,'f-comp1'),lv(data,'f-comp2')].filter(Boolean);
+  if (co.length) html += f('🤝 Complimented', co.join(' · '));
+  if (lv(data,'f-tmrw'))  html += f('🎯 Tomorrow Priority', lv(data,'f-tmrw'));
+  if (lv(data,'f-sleep')) html += '<div style="margin-top:6px;font-size:12px;color:var(--muted)">😴 Sleep: '+eh(lv(data,'f-sleep'))+'</div>';
+  return html || '<div style="color:var(--muted);font-size:11px;padding:4px">No notes filled in.</div>';
+}
+
+function toggleLog(hdr) {
+  var body = hdr.nextElementSibling;
+  var arr  = hdr.querySelector('span:last-child');
+  var open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  if (arr) arr.textContent = open ? '▼' : '▲';
+}
+
+// ── CSV DOWNLOAD ─────────────────────────────────────────────
+function downloadAll() {
+  var rows = [['Day','Date','Tasks Done',
+    'Meditation Note','Activity','Activity Note',
+    'Podcast','Podcast Insight',
+    'T1 Setup','T1 Entry','T1 Exit','T1 SL','T1 Target','T1 Qty','T1 Good','T1 Bad','T1 Learning',
+    'T2 Setup','T2 Entry','T2 Exit','T2 SL','T2 Target','T2 Qty','T2 Good','T2 Bad','T2 Learning',
+    'Pattern','Pattern Insight','Diploma Module','Diploma Concept',
+    'Gratitude 1','Gratitude 2','Gratitude 3',
+    'Improve 1','Improve 2','Improve 3',
+    'Compliment 1','Compliment 2','Tomorrow Priority','Sleep Time']];
+  for (var d = 1; d <= CHALLENGE_DAYS; d++) {
+    var data = lsLoad(d);
+    var dm   = data && data._dm ? data._dm : {};
+    rows.push([d, fmtDate(d), Object.values(dm).filter(Boolean).length,
+      lv(data,'f-med-n'), lv(data,'f-phy-a'), lv(data,'f-phy-n'),
+      lv(data,'f-pod-n'), lv(data,'f-pod-k'),
+      lv(data,'f-t1s'), lv(data,'f-t1en'), lv(data,'f-t1ex'), lv(data,'f-t1sl'), lv(data,'f-t1tg'), lv(data,'f-t1qty'), lv(data,'f-t1gd'), lv(data,'f-t1bd'), lv(data,'f-t1ln'),
+      lv(data,'f-t2s'), lv(data,'f-t2en'), lv(data,'f-t2ex'), lv(data,'f-t2sl'), lv(data,'f-t2tg'), lv(data,'f-t2qty'), lv(data,'f-t2gd'), lv(data,'f-t2bd'), lv(data,'f-t2ln'),
+      lv(data,'f-pat-n'), lv(data,'f-pat-k'), lv(data,'f-dip-n'), lv(data,'f-dip-k'),
+      lv(data,'f-g1'), lv(data,'f-g2'), lv(data,'f-g3'),
+      lv(data,'f-imp1'), lv(data,'f-imp2'), lv(data,'f-imp3'),
+      lv(data,'f-comp1'), lv(data,'f-comp2'), lv(data,'f-tmrw'), lv(data,'f-sleep')
+    ]);
+  }
+  var csv  = rows.map(function(r){ return r.map(function(c){ return '"'+String(c||'').replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a'); a.href = url; a.download = '50K_Challenge_Journal.csv'; a.click();
+  URL.revokeObjectURL(url);
+  toast('⬇ CSV downloaded!');
+}
+
+// ─────────────────────────────────────────────────────────────
+//  INIT -- runs once on page load
+// ─────────────────────────────────────────────────────────────
+(function init() {
+  loadSettings();
+  day = getTodayDay();
+
+  // Apply saved theme
+  var savedTheme = lsGet('50k_theme');
+  if (savedTheme === 'day') {
+    _isDayMode = true;
+    document.body.classList.add('day-mode');
+    document.getElementById('themeBtn').textContent = '🌙 Night';
+  }
+
+  // Apply brand from settings
+  var s = {};
+  try { s = JSON.parse(lsGet('50k_settings') || '{}'); } catch(e){}
+  if (s.name) document.getElementById('brandName').textContent = s.name;
+  var endD = new Date(CHALLENGE_START.getTime()); endD.setDate(endD.getDate() + CHALLENGE_DAYS - 1);
+  var MO   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('brandSub').textContent =
+    CHALLENGE_START.getDate()+' '+MO[CHALLENGE_START.getMonth()]+' → '+endD.getDate()+' '+MO[endD.getMonth()]+' '+endD.getFullYear();
+
+  // Grid label
+  var gl = document.getElementById('gridLabel'); if (gl) gl.textContent = CHALLENGE_DAYS + ' Day Progress';
+  var ts = document.getElementById('totSub'); if (ts) ts.textContent = 'Challenge Target: '+CHALLENGE_DAYS+' × '+Math.floor(DAILY_TARGET/60)+'h '+(DAILY_TARGET%60>0?DAILY_TARGET%60+'m':'');
+
+  applyTaskConfig();
+  loadDay();
+  attachAutoSave();
+
+  // Open meditation card by default on today
+  var medCard = document.getElementById('rc-med');
+  if (medCard && !doneMap['med']) medCard.classList.add('open');
+
+  setTimeout(function() {
+    toast('📅 Day ' + day + ' of ' + CHALLENGE_DAYS + ' · ' + fmtDate(day));
+  }, 600);
+})();
+</script>
+</body>
+</html>
