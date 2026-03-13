@@ -834,7 +834,7 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
     <div class="brand">
       <div class="brand-icon" onclick="hideLogs()" title="Back to Dashboard">🏆</div>
       <div>
-        <div class="brand-name" id="brandName">50K CHALLENGE</div>
+        <div class="brand-name" id="brandName">THE 50 DAYS CHALLENGE</div>
         <div class="brand-sub" id="brandSub" onclick="openSettingsDeferred()" title="Tap to change dates">10 Mar → 17 Jun 2026</div>
       </div>
     </div>
@@ -947,6 +947,12 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
     </div>
     <div class="fl"><label>How did you feel during meditation?</label>
     <textarea class="fta" id="f-med-n" placeholder="Mind was restless for first 5 min, then settled. Felt calm after..."></textarea></div>
+    <div style="display:flex;gap:10px;">
+      <div class="fl" style="flex:1;margin-bottom:0"><label>⏰ Wake Up Time</label>
+      <input type="text" class="fi" id="f-wake" placeholder="e.g. 5:30 AM"></div>
+      <div class="fl" style="flex:1;margin-bottom:0"><label>📖 Book Pages</label>
+      <input type="number" class="fi" id="f-med-book" placeholder="e.g. 10" min="0"></div>
+    </div>
     <button class="sbtn" id="btn-med" onclick="done('med')">✓ Mark Meditation Complete</button>
   </div>
 </div>
@@ -980,7 +986,36 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
     </div>
     <div class="fl"><label>Energy level / How it felt</label>
     <textarea class="fta" id="f-phy-n" placeholder="Felt heavy at start. Won 3 basketball games. Energised after..." style="min-height:50px"></textarea></div>
+    <div class="fl"><label>👟 Steps Today</label>
+    <input type="number" class="fi" id="f-phy-steps" placeholder="e.g. 8500" min="0" style="width:130px;"></div>
     <button class="sbtn" id="btn-phy" onclick="done('phy')">✓ Mark Physical Complete</button>
+  </div>
+</div>
+
+<!-- HEALTH -->
+<div class="rc" id="rc-hlt" style="border-left:4px solid #22c55e;">
+  <div class="rc-hdr" onclick="tog('hlt')">
+    <div class="rc-ico">🥗</div>
+    <div class="rc-meta">
+      <div class="rc-title">Health Log <span class="tag" style="background:#22c55e22;color:#22c55e;border:1px solid #22c55e44;">Daily</span></div>
+      <div class="rc-sub">Fruit · Seeds · Protein · Junk</div>
+    </div>
+    <div class="rc-r"><div class="arr">▼</div></div>
+  </div>
+  <div class="rc-body">
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div class="fl" style="flex:1;margin-bottom:0"><label>🍎 Fruit Today</label>
+      <input type="text" class="fi" id="f-hlt-fruit" placeholder="e.g. Apple, Banana..."></div>
+      <div class="fl" style="flex:1;margin-bottom:0"><label>🌱 Seeds Eaten</label>
+      <input type="text" class="fi" id="f-hlt-seeds" placeholder="e.g. Chia, Flax, Pumpkin..."></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div class="fl" style="flex:1;margin-bottom:0"><label>💪 Protein (g)</label>
+      <input type="number" class="fi" id="f-hlt-protein" placeholder="e.g. 80" min="0" style=""></div>
+      <div class="fl" style="flex:1;margin-bottom:0"><label>🍟 Junk Food?</label>
+      <input type="text" class="fi" id="f-hlt-junk" placeholder="None / Yes — what?"></div>
+    </div>
+    <button class="sbtn" id="btn-hlt" onclick="done('hlt')" style="background:linear-gradient(135deg,#22c55e,#16a34a);">✓ Health Log Saved 🥗</button>
   </div>
 </div>
 
@@ -1292,8 +1327,8 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
     <div class="fl"><label>Tomorrow's Top Priority</label>
     <input type="text" class="fi" id="f-tmrw" placeholder="e.g. Study Options Delta 60min · Paper trade BankNifty breakout..."></div>
     <div style="display:flex;gap:10px;margin-bottom:0;">
-      <div class="fl" style="flex:1;margin-bottom:0"><label>⏰ Wake Up Time</label>
-      <input type="text" class="fi" id="f-wake" placeholder="e.g. 5:30 AM"></div>
+      <div class="fl" style="flex:1;margin-bottom:0"><label>📱 Screen Time Today</label>
+      <input type="text" class="fi" id="f-screen" placeholder="e.g. 2h 30m"></div>
       <div class="fl" style="flex:1;margin-bottom:0"><label>😴 Sleep Time</label>
       <input type="text" class="fi" id="f-sleep" value="10:30 PM"></div>
     </div>
@@ -1326,10 +1361,12 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
       <div class="sc"><div class="sc-ic">🎧</div><div class="sc-v" id="s-pod">0m</div><div class="sc-l">Podcast</div></div>
       <div class="sc"><div class="sc-ic">📊</div><div class="sc-v" id="s-trd">0m</div><div class="sc-l">Trading</div></div>
       <div class="sc"><div class="sc-ic">🔬</div><div class="sc-v" id="s-pat">0m</div><div class="sc-l">Patterns</div></div>
-      <div class="sc"><div class="sc-ic">✅</div><div class="sc-v" id="s-days">0</div><div class="sc-l" id="s-days-lbl">Tasks Done</div></div>
+      <div class="sc"><div class="sc-ic">📖</div><div class="sc-v" id="s-book">0</div><div class="sc-l">Book Pages</div></div>
+      <div class="sc"><div class="sc-ic">👟</div><div class="sc-v" id="s-steps">--</div><div class="sc-l">Steps</div></div>
+      <div class="sc"><div class="sc-ic">💪</div><div class="sc-v" id="s-protein" style="font-size:13px">--</div><div class="sc-l">Protein (g)</div></div>
       <div class="sc"><div class="sc-ic">💰</div><div class="sc-v" id="s-pnl" style="font-size:13px">--</div><div class="sc-l">P&amp;L</div></div>
-      <div class="sc"><div class="sc-ic">⏰</div><div class="sc-v" id="s-wake" style="font-size:13px">--</div><div class="sc-l">Avg Wake</div></div>
-      <div class="sc"><div class="sc-ic">😴</div><div class="sc-v" id="s-sleep" style="font-size:13px">--</div><div class="sc-l">Avg Sleep</div></div>
+      <div class="sc"><div class="sc-ic">📱</div><div class="sc-v" id="s-screen" style="font-size:12px">--</div><div class="sc-l">Screen Time</div></div>
+      <div class="sc" style="grid-column:span 2;"><div class="sc-ic">🛌</div><div class="sc-v" id="s-sleepwake" style="font-size:12px">-- / --</div><div class="sc-l">Wake / Sleep</div></div>
     </div>
     <div class="totbox">
       <div class="tot-l">Total Productive Time -- All Days</div>
@@ -1456,6 +1493,7 @@ var _confirmCallback = null;
 var TASK_DEFAULTS = {
   med: { name:'Meditation',               sub:'Silence & Breath',                      mins:15 },
   phy: { name:'Physical Activity',        sub:'Move · Win the morning',                mins:30 },
+  hlt: { name:'Health Log',              sub:'Fruit · Seeds · Protein · Junk',        mins:0  },
   aff: { name:'Affirmations + Gratitude', sub:'6 affirmations · Speak 2× · 3 gratitudes', mins:0 },
   pod: { name:'Morning Podcast',          sub:'One episode · Metro / Home',            mins:40 },
   trd: { name:'Paper Trades 1 + 2',       sub:'Max loss ₹100 each · Full journal',    mins:0  },
@@ -1468,6 +1506,7 @@ var TASK_CONFIG = {}; // loaded from storage or defaults
 var BTN_DEFAULT = {
   med:'✓ Mark Meditation Complete',
   phy:'✓ Mark Physical Complete',
+  hlt:'✓ Health Log Saved 🥗',
   aff:'✓ Mark Vision Board Complete',
   pod:'✓ Mark Podcast Complete',
   trd:'✓ Both Trades Logged',
@@ -1552,10 +1591,11 @@ function getDayStatus(d) {
     if (!raw) return null;
     try { dm = JSON.parse(raw)._dm || {}; } catch(e) { return null; }
   }
+  var TASK_IDS = ['med','phy','hlt','aff','pod','trd','pat','dip','ngt'];
   var done = Object.values(dm).filter(Boolean).length;
-  if (done === 8) return 'perfect';
-  if (done >= 5)  return 'ok';
-  if (done >= 1)  return 'part';
+  if (done >= TASK_IDS.length) return 'perfect';
+  if (done >= 5) return 'ok';
+  if (done >= 1) return 'part';
   if (d === getTodayDay()) return null; // today with 0 = not started yet
   return 'zero';
 }
@@ -1660,7 +1700,7 @@ function loadDay() {
 
   // Reset UI
   doneMap = {};
-  ['med','phy','aff','pod','trd','pat','dip','ngt'].forEach(function(id) {
+  ['med','phy','hlt','aff','pod','trd','pat','dip','ngt'].forEach(function(id) {
     var c = document.getElementById('rc-' + id);
     if (c) { c.classList.remove('done','open','collapsed'); }
     var btn = document.getElementById('btn-' + id);
@@ -1687,7 +1727,7 @@ function loadDay() {
 
   // Restore done states
   doneMap = Object.assign({}, data._dm || {});
-  ['med','phy','aff','pod','trd','pat','dip','ngt'].forEach(function(id) {
+  ['med','phy','hlt','aff','pod','trd','pat','dip','ngt'].forEach(function(id) {
     var c   = document.getElementById('rc-' + id);
     var btn = document.getElementById('btn-' + id);
     if (doneMap[id]) {
@@ -1801,7 +1841,7 @@ function setDateDisplay() {
 
 // ── RING / PROGRESS ──────────────────────────────────────────
 function updRing() {
-  var ids  = ['med','phy','aff','pod','trd','pat','dip','ngt'];
+  var ids  = ['med','phy','hlt','aff','pod','trd','pat','dip','ngt'];
   var done = ids.filter(function(k) { return doneMap[k]; }).length;
   var pct  = Math.round(done / ids.length * 100);
   var col  = pct === 100 ? '#2ECC8A' : pct >= 50 ? '#F5A623' : '#FF5F1F';
@@ -1810,7 +1850,7 @@ function updRing() {
   if (rp) { rp.textContent = pct + '%'; rp.style.color = col; }
 
   var td = document.getElementById('taskD');
-  if (td) td.textContent = done + ' / ' + ids.length;
+  if (td) { td.textContent = done + ' / ' + ids.length; td.style.color = col; }
 
   var ring = document.getElementById('ringCircle');
   if (ring) {
@@ -1941,23 +1981,36 @@ function updSummary() {
     var sTrd = document.getElementById('s-trd'); if (sTrd) sTrd.textContent = fmtM(trdMin);
     total += trdMin;
 
-    // Tasks done
+    // Tasks done count (keep for internal use)
     var sDays = document.getElementById('s-days'); if (sDays) sDays.textContent = Object.values(doneMap).filter(Boolean).length;
-    var sDaysLbl = document.getElementById('s-days-lbl'); if (sDaysLbl) sDaysLbl.textContent = 'Tasks Done';
 
-    // P&L today — sum both trades
-    var td = lsLoad(getTodayDay()) || {};
-    var pnl = calcPnlTotal(td);
+    // Book pages today
+    var td2 = lsLoad(getTodayDay()) || {};
+    var bookPgs = parseInt(td2['f-med-book'] || '0') || 0;
+    var sBook = document.getElementById('s-book'); if (sBook) sBook.textContent = bookPgs || 0;
+
+    // Steps today
+    var stepsVal = td2['f-phy-steps'] || '--';
+    var sSteps = document.getElementById('s-steps'); if (sSteps) sSteps.textContent = stepsVal !== '--' ? Number(stepsVal).toLocaleString('en-IN') : '--';
+
+    // Protein today
+    var proteinVal = td2['f-hlt-protein'] || '--';
+    var sProt = document.getElementById('s-protein'); if (sProt) sProt.textContent = proteinVal !== '--' ? proteinVal + 'g' : '--';
+
+    // P&L today
+    var pnl = calcPnlTotal(td2);
     var sPnl = document.getElementById('s-pnl');
     if (sPnl) { sPnl.textContent = pnl === null ? '--' : (pnl >= 0 ? '+₹'+pnl : '-₹'+Math.abs(pnl)); sPnl.style.color = pnl === null ? '' : (pnl >= 0 ? 'var(--green)' : '#ef4444'); }
 
-    // Wake / Sleep today
-    var wakeToday  = td['f-wake']  || '--';
-    var sleepToday = td['f-sleep'] || '--';
-    var sWake  = document.getElementById('s-wake');  if (sWake)  sWake.textContent  = wakeToday;
-    var sSleep = document.getElementById('s-sleep'); if (sSleep) sSleep.textContent = sleepToday;
+    // Screen time today
+    var screenVal = td2['f-screen'] || '--';
+    var sScreen = document.getElementById('s-screen'); if (sScreen) sScreen.textContent = screenVal;
 
-    var pt = document.getElementById('prodT'); if (pt) pt.textContent = fmtM(total);
+    // Wake (from meditation) / Sleep (from night rituals) merged
+    var swEl = document.getElementById('s-sleepwake');
+    if (swEl) swEl.textContent = (td2['f-wake'] || '--') + ' / ' + (td2['f-sleep'] || '--');
+
+    var pt = document.getElementById('prodT'); if (pt) pt.textContent = fmtM(calcTotalMinutes());
     var tv = document.getElementById('totV'); if (tv) tv.textContent = fmtM(calcTotalMinutes());
     var tf = document.getElementById('totF');
     if (tf) tf.style.width = Math.min(100, Math.round(calcTotalMinutes() / (DAILY_TARGET * CHALLENGE_DAYS) * 100)) + '%';
@@ -1968,8 +2021,9 @@ function updSummary() {
   if (_sumTab === 'week') fromDay = Math.max(1, today - 6);
 
   var totals = { med:0, phy:0, pod:0, trd:0, pat:0 };
-  var daysDone = 0, totalPnl = 0, pnlDays = 0;
-  var wakeList = [], sleepList = [];
+  var totalPnl = 0, pnlDays = 0;
+  var totalBook = 0, totalSteps = 0, stepDays = 0, totalProtein = 0, proteinDays = 0;
+  var wakeList = [], sleepList = [], screenList = [];
 
   for (var d = fromDay; d <= toDay; d++) {
     var data = (d === today) ? lsLoad(d) || { _dm: doneMap } : lsLoad(d);
@@ -1980,14 +2034,22 @@ function updSummary() {
     if (dm.pod) totals.pod += dur.pod;
     if (dm.trd) totals.trd += 60;
     if (dm.pat) totals.pat += dur.pat;
-    var tasksDone = Object.values(dm).filter(Boolean).length;
-    if (tasksDone >= 4) daysDone++;
+    // Book pages
+    var bp = parseInt(data['f-med-book'] || '0') || 0;
+    totalBook += bp;
+    // Steps
+    var st = parseInt(data['f-phy-steps'] || '0') || 0;
+    if (st > 0) { totalSteps += st; stepDays++; }
+    // Protein
+    var pr = parseInt(data['f-hlt-protein'] || '0') || 0;
+    if (pr > 0) { totalProtein += pr; proteinDays++; }
     // P&L
     var dp = calcPnlTotal(data);
     if (dp !== null) { totalPnl += dp; pnlDays++; }
     // Wake / Sleep
-    if (data['f-wake'])  wakeList.push(data['f-wake']);
-    if (data['f-sleep']) sleepList.push(data['f-sleep']);
+    if (data['f-wake'])   wakeList.push(data['f-wake']);
+    if (data['f-sleep'])  sleepList.push(data['f-sleep']);
+    if (data['f-screen']) screenList.push(data['f-screen']);
   }
 
   Object.keys(totals).forEach(function(id) {
@@ -1995,8 +2057,16 @@ function updSummary() {
     if (el) el.textContent = fmtM(totals[id]);
   });
 
-  var sDays2 = document.getElementById('s-days'); if (sDays2) sDays2.textContent = daysDone;
-  var sDaysLbl2 = document.getElementById('s-days-lbl'); if (sDaysLbl2) sDaysLbl2.textContent = 'Days Done';
+  // Book pages total
+  var sBook2 = document.getElementById('s-book'); if (sBook2) sBook2.textContent = totalBook;
+
+  // Steps avg
+  var sSteps2 = document.getElementById('s-steps');
+  if (sSteps2) sSteps2.textContent = stepDays > 0 ? Math.round(totalSteps/stepDays).toLocaleString('en-IN') : '--';
+
+  // Protein avg
+  var sProt2 = document.getElementById('s-protein');
+  if (sProt2) sProt2.textContent = proteinDays > 0 ? Math.round(totalProtein/proteinDays) + 'g' : '--';
 
   // P&L total
   var sPnl2 = document.getElementById('s-pnl');
@@ -2005,11 +2075,18 @@ function updSummary() {
     else { sPnl2.textContent = (totalPnl >= 0 ? '+₹' : '-₹') + Math.abs(totalPnl); sPnl2.style.color = totalPnl >= 0 ? 'var(--green)' : '#ef4444'; }
   }
 
-  // Avg wake / sleep (last entry as proxy — times don't average numerically simply)
-  var sWake2  = document.getElementById('s-wake');
-  var sSleep2 = document.getElementById('s-sleep');
-  if (sWake2)  sWake2.textContent  = wakeList.length  ? wakeList[wakeList.length-1]   + (wakeList.length  > 1 ? ' ('+wakeList.length+'d)'  : '') : '--';
-  if (sSleep2) sSleep2.textContent = sleepList.length ? sleepList[sleepList.length-1] + (sleepList.length > 1 ? ' ('+sleepList.length+'d)' : '') : '--';
+  // Screen time (last logged)
+  var sScreen2 = document.getElementById('s-screen');
+  if (sScreen2) sScreen2.textContent = screenList.length ? screenList[screenList.length-1] + (screenList.length > 1 ? ' ('+screenList.length+'d)' : '') : '--';
+
+  // Wake / Sleep merged
+  var swEl2 = document.getElementById('s-sleepwake');
+  if (swEl2) {
+    var wt = wakeList.length  ? wakeList[wakeList.length-1]   : '--';
+    var sl = sleepList.length ? sleepList[sleepList.length-1] : '--';
+    var suffix = wakeList.length > 1 ? ' ('+Math.max(wakeList.length,sleepList.length)+'d)' : '';
+    swEl2.textContent = wt + ' / ' + sl + suffix;
+  }
 
   var total2 = Object.values(totals).reduce(function(a,b){ return a+b; }, 0);
   var tv2 = document.getElementById('totV'); if (tv2) tv2.textContent = fmtM(total2);
@@ -2523,7 +2600,7 @@ function closeSettings() {
 function renderTaskEditor() {
   var list = document.getElementById('taskEditorList');
   if (!list) return;
-  var icons = {med:'🧘',phy:'🏀',aff:'🌟',pod:'🎧',trd:'📊',pat:'🔬',dip:'🎓',ngt:'🌙'};
+  var icons = {med:'🧘',phy:'🏀',hlt:'🥗',aff:'🌟',pod:'🎧',trd:'📊',pat:'🔬',dip:'🎓',ngt:'🌙'};
   var keys  = Object.keys(TASK_CONFIG);
   list.innerHTML = '';
 
@@ -2776,6 +2853,7 @@ var standardPartsForDisplay = {
   pod: ['one episode', 'metro / home'],
   pat: ['one pattern', 'office / metro'],
   dip: ['evening study'],
+  hlt: ['fruit', 'seeds', 'protein', 'junk', 'fruit · seeds · protein · junk'],
   aff: ['6 affirmations', 'speak 2×', 'speak 2x', '3 gratitudes'], ngt: ['5 habits', 'prepare', 'reflect', 'rest', 'visualise'], trd: []
 };
 
@@ -2823,6 +2901,7 @@ function applyTaskConfig() {
     var standardParts = {
       med: ['silence & breath', 'how do you feel today?', 'silence & breath · how do you feel today?'],
       phy: ['move', 'win the morning', 'activity', 'activity note'],
+      hlt: ['fruit', 'seeds', 'protein', 'junk', 'fruit · seeds · protein · junk'],
       aff: ['6 affirmations', 'speak 2×', 'speak 2x', '3 gratitudes'], ngt: ['5 habits', 'prepare', 'reflect', 'rest', 'visualise'], trd: [],
       pod: ['one episode', 'metro / home', 'podcast name'],
       pat: ['one pattern', 'office / metro'],
@@ -2979,7 +3058,7 @@ function applyTaskConfig() {
 function saveSettings() {
   var startVal  = document.getElementById('set-startDate').value;
   var daysVal   = parseInt(document.getElementById('set-days').value)   || 100;
-  var nameVal   = document.getElementById('set-name').value.trim()       || '50K CHALLENGE';
+  var nameVal   = document.getElementById('set-name').value.trim()       || 'THE 50 DAYS CHALLENGE';
   var targetVal = parseInt(document.getElementById('set-target').value)  || 195;
   if (!startVal) { toast('⚠️ Please set a start date'); return; }
 
@@ -3117,7 +3196,7 @@ function renderLogs() {
     shown++;
     var statusCol = tdone>=6 ? '#2ECC8A' : tdone>0 ? '#F5A623' : '#4A6278';
     if (frozen) statusCol = '#00D4FF';
-    var rituals = [{id:'med',ic:'🧘'},{id:'phy',ic:'🏀'},{id:'aff',ic:'🌟'},{id:'pod',ic:'🎧'},{id:'trd',ic:'📊'},{id:'pat',ic:'🔬'},{id:'dip',ic:'🎓'},{id:'ngt',ic:'🌙'}];
+    var rituals = [{id:'med',ic:'🧘'},{id:'phy',ic:'🏀'},{id:'hlt',ic:'🥗'},{id:'aff',ic:'🌟'},{id:'pod',ic:'🎧'},{id:'trd',ic:'📊'},{id:'pat',ic:'🔬'},{id:'dip',ic:'🎓'},{id:'ngt',ic:'🌙'}];
     var ritRow  = rituals.map(function(r) {
       return '<span style="font-size:12px;opacity:'+(dm[r.id]?'1':'.25')+'">'+r.ic+'</span>';
     }).join('');
