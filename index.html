@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" style="overflow-x:hidden;max-width:100vw;">
 <head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>50K Challenge -- 100 Day Tracker</title>
+<title>50K Challenge -- 50 Day Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════
    50K CHALLENGE -- DESIGN TOKENS (CSS Variables)
@@ -49,7 +52,7 @@
   --vb-bdr:    #243040;
   --vb-txt:    #C8D0DC;
   --vb-chk:    #3A5070;
-  --toast-bg:  #0D1828;
+  --toast-bg:  #1a1a2e;
   --select-bg: #0A1520;
   --modal-bg:  #0A0F1C;
   --ring-track:#1A2A38;
@@ -86,7 +89,7 @@ body.day-mode {
   --vb-bdr:    #C0D0E4;
   --vb-txt:    #1A2A44;
   --vb-chk:    #7A9ABB;
-  --toast-bg:  #1A2540;
+  --toast-bg:  #2d2d2d;
   --select-bg: #FFFFFF;
   --modal-bg:  #FFFFFF;
   --ring-track:#D0D8E8;
@@ -168,10 +171,18 @@ body.day-mode .day-nav { background:#E8EFF8; border-color:#C0CCE0; }
 }
 .action-bar-btn:active { opacity:.7; }
 .ab-saved { color:var(--muted); border-color:transparent; cursor:default; font-size:10px; flex:0.7; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:80px; }
-.ab-today  { color:#FF5F1F; border-color:rgba(255,95,31,.3);  background:rgba(255,95,31,.15); }
-.ab-theme  { color:#FFBE0B; border-color:rgba(255,190,11,.3); background:rgba(255,190,11,.1); }
-.ab-logs   { color:#00D4FF; border-color:rgba(0,212,255,.3);  background:rgba(0,212,255,.1); }
-.ab-set    { color:#8B5CF6; border-color:rgba(139,92,246,.3); background:rgba(139,92,246,.1); }
+.ab-today  { color:#fff; border-color:#D94010; background:#D94010; }
+.ab-theme  { color:#fff; border-color:#AA7000; background:#AA7000; }
+.ab-night  { color:#fff; border-color:#AA7000; background:#AA7000; }
+.ab-logs   { color:#fff; border-color:#006699; background:#006699; }
+.ab-set    { color:#fff; border-color:#5A2DB0; background:#5A2DB0; }
+
+/* Dark mode tab overrides -- keep bright colours on dark bg */
+body:not(.day-mode) .ab-today  { color:#FF5F1F; border-color:rgba(255,95,31,.3);   background:rgba(255,95,31,.15); }
+body:not(.day-mode) .ab-theme  { color:#FFBE0B; border-color:rgba(255,190,11,.3);  background:rgba(255,190,11,.1); }
+body:not(.day-mode) .ab-night  { color:#F5A623; border-color:rgba(245,166,35,.3);  background:rgba(245,166,35,.1); }
+body:not(.day-mode) .ab-logs   { color:#00D4FF; border-color:rgba(0,212,255,.3);   background:rgba(0,212,255,.1); }
+body:not(.day-mode) .ab-set    { color:#8B5CF6; border-color:rgba(139,92,246,.3);  background:rgba(139,92,246,.1); }
 
 /* ── MAIN ── */
 .main { background:var(--bg); padding:12px 12px 80px; }
@@ -225,8 +236,10 @@ body.day-mode .day-num-big { color:#CC4400; }
 }
 .rc-sub {
   font-family:'JetBrains Mono',monospace; font-size:11px;
-  color:var(--muted2); margin-top:2px;
+  color:var(--muted2); margin-top:2px; line-height:1.6;
 }
+.rc-sub .sub-line { display:block; }
+.rc-sub .sub-line + .sub-line { margin-top:1px; }
 .rc-r { display:flex; align-items:center; gap:6px; flex-shrink:0; margin-left:8px; }
 .arr { color:var(--muted2); font-size:10px; transition:transform .2s; }
 .rc.open .arr { transform:rotate(180deg); }
@@ -314,6 +327,10 @@ label {
 }
 .fi:focus, .fta:focus { outline:none; border-color:var(--gold); }
 .fi::placeholder, .fta::placeholder { color:var(--muted); }
+.trade-ph-wrap { position:relative; }
+.trade-ph-wrap .ghost-ph { position:absolute; top:50%; left:12px; transform:translateY(-50%); color:#ccc; font-size:13px; font-style:italic; pointer-events:none; transition:opacity .1s; font-family:'JetBrains Mono',monospace; }
+.trade-ph-wrap input:not(:placeholder-shown) + .ghost-ph,
+.trade-ph-wrap input:focus + .ghost-ph { opacity:0; }
 .fta { min-height:65px; resize:vertical; line-height:1.55; }
 .fsel { background:var(--select-bg); }
 .g2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
@@ -352,7 +369,7 @@ label {
 .tbar-lbl {
   font-size:10px; color:var(--tbar-lbl);
   letter-spacing:1px; font-weight:500; text-transform:uppercase;
-  white-space:nowrap;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;
 }
 .tprog   { height:5px; background:var(--gbar-bg); border-radius:3px; overflow:hidden; }
 .tprog-f { height:100%; background:linear-gradient(90deg,#FF5F1F,#F5A623); border-radius:3px; transition:width .5s; }
@@ -482,12 +499,14 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
 .vb-item.vb-read .vb-check::after { content:'✓'; }
 
 /* affirmation rep buttons */
-.repw { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+.repw { display:flex; gap:8px; flex-wrap:nowrap; margin-bottom:10px; }
 .repb {
+  flex:1; min-width:0;
   padding:7px 14px; border-radius:6px; cursor:pointer;
   background:var(--rc-bg); border:1px solid var(--rc-bdr);
   font-family:'Bebas Neue',Impact,Arial,sans-serif; font-size:14px;
   color:var(--muted); letter-spacing:1px; transition:all .2s;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .repb.rd { background:var(--gold); color:#000; border-color:var(--gold); font-weight:700; }
 
@@ -510,10 +529,11 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
 /* ── TOAST ── */
 .toast {
   position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(60px);
-  background:var(--toast-bg); color:var(--text); border:1px solid var(--border2);
-  border-radius:8px; padding:10px 20px; font-size:13px;
+  background:var(--toast-bg); color:#ffffff; border:1px solid rgba(255,255,255,.15);
+  border-radius:10px; padding:12px 24px; font-size:13px; font-weight:600;
   transition:transform .3s ease, opacity .3s ease; opacity:0; z-index:999;
   white-space:nowrap; max-width:90vw; overflow:hidden; text-overflow:ellipsis;
+  box-shadow: 0 4px 20px rgba(0,0,0,.4);
 }
 .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
 
@@ -583,6 +603,219 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
 </head>
 <body>
 
+<!-- ── SPLASH SCREEN ── -->
+<div id="splashScreen" style="
+  position:fixed;inset:0;z-index:9999;
+  background:#0a0a0f;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;
+  transition:opacity 0.6s ease, transform 0.6s ease;
+  overflow:hidden;
+">
+  <!-- Background glow -->
+  <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
+    <div style="position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(124,92,191,0.18) 0%,transparent 70%);border-radius:50%;"></div>
+    <div style="position:absolute;bottom:-10%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(212,160,23,0.1) 0%,transparent 70%);border-radius:50%;"></div>
+  </div>
+
+  <!-- Photo circle — tap to open editor -->
+  <div id="splashPhotoWrap" style="
+    position:relative;margin-bottom:16px;
+    width:130px;height:130px;border-radius:50%;
+    border:3px solid #d4a017;
+    box-shadow:0 0 40px rgba(212,160,23,0.4), 0 0 80px rgba(124,92,191,0.2);
+    overflow:hidden;background:#1a1a2e;
+    display:flex;align-items:center;justify-content:center;
+    animation: splashPulse 3s ease-in-out infinite;
+    cursor:pointer;flex-shrink:0;
+  " onclick="openPhotoEditor()">
+    <div id="splashEmoji" style="font-size:56px;line-height:1;">🔥</div>
+    <img id="splashPhoto" style="display:none;position:absolute;transform-origin:center center;" alt="Shakti">
+    <!-- Edit overlay on hover -->
+    <div id="splashPhotoOverlay" style="
+      position:absolute;inset:0;border-radius:50%;
+      background:rgba(0,0,0,0.45);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      opacity:0;transition:opacity .2s;pointer-events:none;
+    ">
+      <div style="font-size:18px;">✏️</div>
+      <div style="font-size:8px;letter-spacing:1px;color:#fff;margin-top:2px;">EDIT</div>
+    </div>
+  </div>
+
+  <input type="file" id="splashPhotoInput" accept="image/*" style="display:none" onchange="setSplashPhoto(this)">
+
+  <!-- PHOTO EDITOR PANEL -->
+  <div id="photoEditorPanel" style="
+    display:none;position:fixed;inset:0;z-index:10001;
+    background:rgba(0,0,0,0.92);
+    flex-direction:column;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;
+    padding:24px 20px;
+  ">
+    <div style="font-size:11px;letter-spacing:3px;color:#d4a017;text-transform:uppercase;margin-bottom:16px;">📸 Photo Settings</div>
+
+    <!-- Preview circle -->
+    <div style="
+      width:140px;height:140px;border-radius:50%;
+      border:3px solid #d4a017;overflow:hidden;
+      background:#1a1a2e;margin-bottom:20px;
+      position:relative;flex-shrink:0;
+      box-shadow:0 0 40px rgba(212,160,23,0.4);
+    " id="photoPreviewWrap">
+      <img id="photoPreviewImg" style="position:absolute;transform-origin:center center;display:none;" alt="preview">
+      <div id="photoPreviewEmoji" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:56px;">🔥</div>
+    </div>
+
+    <!-- Drag hint -->
+    <div id="photoDragHint" style="font-size:9px;color:#4a5568;letter-spacing:1px;margin-bottom:16px;display:none;">👆 Drag to reposition</div>
+
+    <!-- Controls -->
+    <div style="width:100%;max-width:280px;">
+
+      <!-- Zoom -->
+      <div style="margin-bottom:14px;">
+        <div style="font-size:9px;letter-spacing:2px;color:#6b7280;text-transform:uppercase;margin-bottom:6px;">🔍 Zoom</div>
+        <input type="range" id="photoZoom" min="80" max="300" value="100" step="1"
+          style="width:100%;accent-color:#d4a017;cursor:pointer;"
+          oninput="applyPhotoTransform()">
+      </div>
+
+      <!-- Position X -->
+      <div style="margin-bottom:14px;">
+        <div style="font-size:9px;letter-spacing:2px;color:#6b7280;text-transform:uppercase;margin-bottom:6px;">↔️ Horizontal</div>
+        <input type="range" id="photoX" min="-80" max="80" value="0" step="1"
+          style="width:100%;accent-color:#d4a017;cursor:pointer;"
+          oninput="applyPhotoTransform()">
+      </div>
+
+      <!-- Position Y -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:9px;letter-spacing:2px;color:#6b7280;text-transform:uppercase;margin-bottom:6px;">↕️ Vertical</div>
+        <input type="range" id="photoY" min="-80" max="80" value="0" step="1"
+          style="width:100%;accent-color:#d4a017;cursor:pointer;"
+          oninput="applyPhotoTransform()">
+      </div>
+
+      <!-- Buttons -->
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <button onclick="document.getElementById('splashPhotoInput').click()" style="
+          flex:1;padding:12px 6px;background:#1e2028;border:1px solid #d4a017;
+          border-radius:8px;color:#d4a017;font-family:'JetBrains Mono',monospace;
+          font-size:10px;letter-spacing:1px;cursor:pointer;text-transform:uppercase;">
+          📷 Change Photo
+        </button>
+        <button onclick="savePhotoSettings()" style="
+          flex:1;padding:12px 6px;background:linear-gradient(135deg,#7c5cbf,#d4a017);
+          border:none;border-radius:8px;color:#fff;font-family:'JetBrains Mono',monospace;
+          font-size:10px;letter-spacing:1px;cursor:pointer;font-weight:700;text-transform:uppercase;">
+          ✓ Save
+        </button>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="removePhoto()" style="
+          flex:1;padding:10px 6px;background:transparent;border:1px solid #ff3b5c;
+          border-radius:8px;color:#ff3b5c;font-family:'JetBrains Mono',monospace;
+          font-size:10px;letter-spacing:1px;cursor:pointer;text-transform:uppercase;">
+          🗑 Remove
+        </button>
+        <button onclick="closePhotoEditor()" style="
+          flex:1;padding:10px 6px;background:transparent;border:1px solid #4a5568;
+          border-radius:8px;color:#6b7280;font-family:'JetBrains Mono',monospace;
+          font-size:10px;letter-spacing:1px;cursor:pointer;text-transform:uppercase;">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Welcome -->
+  <!-- Thin divider line -->
+  <div style="width:40px;height:1px;background:linear-gradient(90deg,transparent,#d4a017,transparent);margin-bottom:10px;"></div>
+
+  <!-- Welcome Back — same style as before -->
+  <div style="font-size:9px;letter-spacing:5px;color:#6b7280;text-transform:uppercase;margin-bottom:8px;font-family:'JetBrains Mono',monospace;">Welcome Back</div>
+
+  <!-- SHAKTI SHARMA -->
+  <div style="
+    font-family:'Bebas Neue',Impact,sans-serif;
+    font-size:44px;letter-spacing:6px;
+    background:linear-gradient(135deg,#f5c842 0%,#ff9a3c 60%,#ff6d3b 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+    margin-bottom:10px;text-align:center;
+    filter:drop-shadow(0 0 24px rgba(245,200,66,0.45));
+    line-height:1;
+  " id="splashName">SHAKTI SHARMA</div>
+
+  <!-- THE X DAYS CHALLENGE — dynamic, fills screen width -->
+  <div style="
+    font-family:'Bebas Neue',Impact,sans-serif;
+    font-size:clamp(30px, 10.5vw, 54px);
+    letter-spacing:2px;
+    color:#fff;
+    text-align:center;
+    width:100vw;
+    padding:0 8px;
+    line-height:1;
+    margin-bottom:4px;
+    text-shadow:0 0 40px rgba(255,255,255,0.15);
+  " id="splashChallengeTitle">THE 50 DAYS CHALLENGE</div>
+
+  <!-- Fire row — streak + flame -->
+  <div style="font-size:18px;margin-bottom:20px;display:flex;align-items:center;gap:6px;justify-content:center;">
+    <span id="splashStreak" style="font-family:'Bebas Neue',Impact,sans-serif;font-size:28px;letter-spacing:2px;color:#d4a017;line-height:1;">0</span>
+    <span style="font-size:24px;">🔥</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:#6b7280;text-transform:uppercase;">streak</span>
+  </div>
+
+  <!-- Daily sub-quote — replaces the small countdown text -->
+  <div id="splashQuote" style="
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;color:#5a6272;letter-spacing:1px;
+    margin-bottom:28px;text-align:center;padding:0 32px;
+    font-style:italic;line-height:1.6;
+  "></div>
+
+  <!-- CTA Button -->
+  <button onclick="closeSplash()" style="
+    background:linear-gradient(135deg,#c940f5,#ff3d79,#ff6b35);
+    border:none;border-radius:50px;
+    color:#fff;font-family:'Playfair Display',Georgia,serif;
+    font-style:italic;font-weight:700;
+    font-size:19px;letter-spacing:0.5px;
+    padding:17px 0;cursor:pointer;
+    box-shadow:0 8px 40px rgba(201,64,245,0.5), 0 2px 16px rgba(255,61,121,0.4);
+    transition:transform .15s, box-shadow .15s;
+    width:280px;max-width:85vw;
+  "
+  onmousedown="this.style.transform='scale(0.97)'"
+  onmouseup="this.style.transform='scale(1)'"
+  ontouchstart="this.style.transform='scale(0.97)'"
+  ontouchend="this.style.transform='scale(1)'"
+  id="splashBtn">Let's Crush It 🔥</button>
+
+  <!-- Day badge -->
+  <div id="splashDayBadge" style="
+    margin-top:16px;font-size:9px;letter-spacing:4px;
+    color:#3a4050;text-transform:uppercase;
+    font-family:'JetBrains Mono',monospace;
+  "></div>
+</div>
+
+<style>
+@keyframes splashPulse {
+  0%,100% { box-shadow:0 0 40px rgba(212,160,23,0.4),0 0 80px rgba(124,92,191,0.2); }
+  50%      { box-shadow:0 0 60px rgba(212,160,23,0.7),0 0 120px rgba(124,92,191,0.35); }
+}
+@keyframes splashFadeIn {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+#splashScreen > * { animation: splashFadeIn 0.8s ease forwards; }
+#splashPhotoWrap:hover #splashPhotoOverlay { opacity:1 !important; }
+</style>
+
 <!-- ── CONFIRM MODAL ── -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
@@ -624,7 +857,7 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
   <div class="action-bar">
     <div id="lastSaved" class="action-bar-btn ab-saved"></div>
     <button class="action-bar-btn ab-today" onclick="goToday()">📅 TODAY</button>
-    <button class="action-bar-btn ab-theme" id="themeBtn" onclick="toggleTheme()">☀️ DAY</button>
+    <button class="action-bar-btn ab-theme" id="themeBtn" onclick="toggleTheme()" title="Auto switches at 6am/8pm. Tap to override.">☀️ DAY</button>
     <button class="action-bar-btn ab-logs" onclick="showLogs()">📋 LOGS</button>
     <button class="action-bar-btn ab-set" onclick="openSettingsDeferred()">⚙️ SET</button>
   </div>
@@ -693,7 +926,7 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
     <div class="rc-ico">🧘</div>
     <div class="rc-meta">
       <div class="rc-title">Meditation <span class="tag tag-m">Compulsory</span></div>
-      <div class="rc-sub">15 min · Silence &amp; Breath · Day <span class="db">1</span>/100</div>
+      <div class="rc-sub">15 min · Silence &amp; Breath · Day <span class="db">1</span>/50</div>
     </div>
     <div class="rc-r"><div class="arr">▼</div></div>
   </div>
@@ -757,7 +990,7 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
     <div class="rc-ico">✍️</div>
     <div class="rc-meta">
       <div class="rc-title">Affirmations + Gratitude <span class="tag tag-m">Compulsory</span></div>
-      <div class="rc-sub">5 affirmations · Speak 2× · 3 gratitudes</div>
+      <div class="rc-sub">6 affirmations · Speak 2× · 3 gratitudes</div>
     </div>
     <div class="rc-r"><div class="arr">▼</div></div>
   </div>
@@ -774,6 +1007,7 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
       <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">👨‍👧 My daughter grows up watching a father who builds empires from 5:30 AM every day</span></div>
       <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">🏢 Thank you Prabhu Ji for my personal office 20 minutes from home in 2026</span></div>
       <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">🏆 I am in the top 1% -- in health, wealth, mindset and family -- in 2026</span></div>
+      <div class="vb-item" onclick="vbTick(this)"><span class="vb-check"></span><span class="vb-txt">🗣️ I speak only good things about myself. My words are energy -- they cast spells on my reality. I choose powerful words and I change my life.</span></div>
     </div>
     <div class="slbl" style="font-size:11px;margin-bottom:8px">Complete Vision Board -- Twice Daily</div>
     <div class="repw">
@@ -838,6 +1072,7 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
     <div class="twrap">
       <div class="thdr">
         <div class="tlbl">📈 TRADE 1</div>
+        <button type="button" onclick="clearTrade(1)" style="background:rgba(220,50,50,.15);border:1px solid rgba(220,50,50,.4);border-radius:4px;color:#e05050;font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 7px;cursor:pointer;letter-spacing:.5px;font-weight:700;">🗑 CLEAR</button>
         <select class="fsel" id="f-t1r" style="background:var(--bg);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:4px 8px">
           <option value="">-- Result --</option>
           <option value="win">✅ WIN</option>
@@ -846,15 +1081,28 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
         </select>
       </div>
       <div class="tbody">
+        <div class="g2" style="margin-bottom:10px;">
+          <div class="fl"><label>Direction</label>
+            <div style="display:flex;gap:8px;">
+              <button type="button" id="f-t1dir-bull" onclick="setDir(1,'bull')"
+                style="flex:1;padding:8px;border-radius:6px;border:1.5px solid rgba(46,204,138,.4);background:rgba(46,204,138,.08);color:#2ECC8A;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;">
+                &#x25B2; BULLISH</button>
+              <button type="button" id="f-t1dir-bear" onclick="setDir(1,'bear')"
+                style="flex:1;padding:8px;border-radius:6px;border:1.5px solid rgba(255,59,92,.4);background:rgba(255,59,92,.08);color:#FF3B5C;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;">
+                &#x25BC; BEARISH</button>
+            </div>
+            <input type="hidden" id="f-t1dir" value="">
+          </div>
+        </div>
         <div class="fl"><label>Structure / Setup Seen</label>
         <input type="text" class="fi" id="f-t1s" placeholder="e.g. Bullish Engulfing at support -- BankNifty 15min..."></div>
         <div class="g3">
-          <div class="fl"><label>Entry Price</label><input type="text" class="fi" id="f-t1en" placeholder="₹44,200" oninput="calcPnl(1)"></div>
-          <div class="fl"><label>Stop Loss</label><input type="text" class="fi" id="f-t1sl" placeholder="₹43,900"></div>
-          <div class="fl"><label>Target (2:1)</label><input type="text" class="fi" id="f-t1tg" placeholder="₹44,700"></div>
+          <div class="fl"><label>Entry Price</label><div class="trade-ph-wrap"><input type="text" class="fi" id="f-t1en" placeholder=" " oninput="calcPnl(1)"><span class="ghost-ph">56700</span></div></div>
+          <div class="fl"><label>Stop Loss</label><div class="trade-ph-wrap"><input type="text" class="fi" id="f-t1sl" placeholder=" " oninput="calcPnl(1)"><span class="ghost-ph">56600</span></div></div>
+          <div class="fl"><label>Target (2:1)</label><div class="trade-ph-wrap"><input type="text" class="fi" id="f-t1tg" placeholder=" " oninput="calcPnl(1)"><span class="ghost-ph">56900</span></div></div>
         </div>
         <div class="g2">
-          <div class="fl"><label>Exit Price</label><input type="text" class="fi" id="f-t1ex" placeholder="Actual exit" oninput="calcPnl(1)"></div>
+          <div class="fl"><label>Exit Price</label><div class="trade-ph-wrap"><input type="text" class="fi" id="f-t1ex" placeholder=" " oninput="calcPnl(1)"><span class="ghost-ph">56900</span></div></div>
           <div class="fl"><label>Time in Trade</label><input type="text" class="fi" id="f-t1tm" placeholder="e.g. 1h 20m"></div>
         </div>
         <div class="g2">
@@ -871,12 +1119,14 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
         </div>
         <div class="fl"><label>📚 Learning + Patience Score (1-10)</label>
         <textarea class="fta" id="f-t1ln" placeholder="Key learning. Patience score: X/10 because..."></textarea></div>
+        <button type="button" onclick="saveTrade(1)" style="width:100%;margin-top:10px;padding:11px;background:#1a6b3a;border:none;border-radius:8px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:1.5px;cursor:pointer;">💾 SAVE TRADE 1</button>
       </div>
     </div>
     <!-- TRADE 2 -->
     <div class="twrap">
       <div class="thdr">
         <div class="tlbl">📉 TRADE 2</div>
+        <button type="button" onclick="clearTrade(2)" style="background:rgba(220,50,50,.15);border:1px solid rgba(220,50,50,.4);border-radius:4px;color:#e05050;font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 7px;cursor:pointer;letter-spacing:.5px;font-weight:700;">🗑 CLEAR</button>
         <select class="fsel" id="f-t2r" style="background:var(--bg);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:4px 8px">
           <option value="">-- Result --</option>
           <option value="win">✅ WIN</option>
@@ -885,15 +1135,28 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
         </select>
       </div>
       <div class="tbody">
+        <div class="g2" style="margin-bottom:10px;">
+          <div class="fl"><label>Direction</label>
+            <div style="display:flex;gap:8px;">
+              <button type="button" id="f-t2dir-bull" onclick="setDir(2,'bull')"
+                style="flex:1;padding:8px;border-radius:6px;border:1.5px solid rgba(46,204,138,.4);background:rgba(46,204,138,.08);color:#2ECC8A;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;">
+                &#x25B2; BULLISH</button>
+              <button type="button" id="f-t2dir-bear" onclick="setDir(2,'bear')"
+                style="flex:1;padding:8px;border-radius:6px;border:1.5px solid rgba(255,59,92,.4);background:rgba(255,59,92,.08);color:#FF3B5C;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;">
+                &#x25BC; BEARISH</button>
+            </div>
+            <input type="hidden" id="f-t2dir" value="">
+          </div>
+        </div>
         <div class="fl"><label>Structure / Setup Seen</label>
         <input type="text" class="fi" id="f-t2s" placeholder="e.g. Bearish breakdown below resistance -- Nifty 5min..."></div>
         <div class="g3">
-          <div class="fl"><label>Entry Price</label><input type="text" class="fi" id="f-t2en" placeholder="₹19,850" oninput="calcPnl(2)"></div>
-          <div class="fl"><label>Stop Loss</label><input type="text" class="fi" id="f-t2sl" placeholder="₹20,050"></div>
-          <div class="fl"><label>Target (2:1)</label><input type="text" class="fi" id="f-t2tg" placeholder="₹19,450"></div>
+          <div class="fl"><label>Entry Price</label><div class="trade-ph-wrap"><input type="text" class="fi" id="f-t2en" placeholder=" " oninput="calcPnl(2)"><span class="ghost-ph">56700</span></div></div>
+          <div class="fl"><label>Stop Loss</label><div class="trade-ph-wrap"><input type="text" class="fi" id="f-t2sl" placeholder=" " oninput="calcPnl(2)"><span class="ghost-ph">56600</span></div></div>
+          <div class="fl"><label>Target (2:1)</label><div class="trade-ph-wrap"><input type="text" class="fi" id="f-t2tg" placeholder=" " oninput="calcPnl(2)"><span class="ghost-ph">56900</span></div></div>
         </div>
         <div class="g2">
-          <div class="fl"><label>Exit Price</label><input type="text" class="fi" id="f-t2ex" placeholder="Actual exit" oninput="calcPnl(2)"></div>
+          <div class="fl"><label>Exit Price</label><div class="trade-ph-wrap"><input type="text" class="fi" id="f-t2ex" placeholder=" " oninput="calcPnl(2)"><span class="ghost-ph">56900</span></div></div>
           <div class="fl"><label>Time in Trade</label><input type="text" class="fi" id="f-t2tm" placeholder="e.g. 45m"></div>
         </div>
         <div class="g2">
@@ -910,6 +1173,7 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
         </div>
         <div class="fl"><label>📚 Learning + Patience Score (1-10)</label>
         <textarea class="fta" id="f-t2ln" placeholder="Key learning. Patience score: X/10 because..."></textarea></div>
+        <button type="button" onclick="saveTrade(2)" style="width:100%;margin-top:10px;padding:11px;background:#1a6b3a;border:none;border-radius:8px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:1.5px;cursor:pointer;">💾 SAVE TRADE 2</button>
       </div>
     </div>
     <!-- Day P&L total -->
@@ -1027,8 +1291,12 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
     </div>
     <div class="fl"><label>Tomorrow's Top Priority</label>
     <input type="text" class="fi" id="f-tmrw" placeholder="e.g. Study Options Delta 60min · Paper trade BankNifty breakout..."></div>
-    <div class="fl"><label>Actual Sleep Time</label>
-    <input type="text" class="fi" id="f-sleep" value="10:30 PM"></div>
+    <div style="display:flex;gap:10px;margin-bottom:0;">
+      <div class="fl" style="flex:1;margin-bottom:0"><label>⏰ Wake Up Time</label>
+      <input type="text" class="fi" id="f-wake" placeholder="e.g. 5:30 AM"></div>
+      <div class="fl" style="flex:1;margin-bottom:0"><label>😴 Sleep Time</label>
+      <input type="text" class="fi" id="f-sleep" value="10:30 PM"></div>
+    </div>
     <button class="sbtn" id="btn-ngt" onclick="done('ngt')">✓ Night Rituals Complete -- Rest Well 🌙</button>
   </div>
 </div>
@@ -1058,15 +1326,15 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
       <div class="sc"><div class="sc-ic">🎧</div><div class="sc-v" id="s-pod">0m</div><div class="sc-l">Podcast</div></div>
       <div class="sc"><div class="sc-ic">📊</div><div class="sc-v" id="s-trd">0m</div><div class="sc-l">Trading</div></div>
       <div class="sc"><div class="sc-ic">🔬</div><div class="sc-v" id="s-pat">0m</div><div class="sc-l">Patterns</div></div>
-      <div class="sc"><div class="sc-ic">🎓</div><div class="sc-v" id="s-dip">0m</div><div class="sc-l">Diploma</div></div>
-      <div class="sc"><div class="sc-ic">✅</div><div class="sc-v" id="s-days">0</div><div class="sc-l">Days Done</div></div>
-      <div class="sc"><div class="sc-ic">📈</div><div class="sc-v" id="s-trades">0</div><div class="sc-l">Trades</div></div>
-      <div class="sc"><div class="sc-ic">📝</div><div class="sc-v" id="s-notes">0</div><div class="sc-l">Notes</div></div>
+      <div class="sc"><div class="sc-ic">✅</div><div class="sc-v" id="s-days">0</div><div class="sc-l" id="s-days-lbl">Tasks Done</div></div>
+      <div class="sc"><div class="sc-ic">💰</div><div class="sc-v" id="s-pnl" style="font-size:13px">--</div><div class="sc-l">P&amp;L</div></div>
+      <div class="sc"><div class="sc-ic">⏰</div><div class="sc-v" id="s-wake" style="font-size:13px">--</div><div class="sc-l">Avg Wake</div></div>
+      <div class="sc"><div class="sc-ic">😴</div><div class="sc-v" id="s-sleep" style="font-size:13px">--</div><div class="sc-l">Avg Sleep</div></div>
     </div>
     <div class="totbox">
       <div class="tot-l">Total Productive Time -- All Days</div>
       <div class="tot-v" id="totV">0h 0m</div>
-      <div class="tot-sub" id="totSub">Challenge Target: 100 × 3h 15m</div>
+      <div class="tot-sub" id="totSub">Challenge Target: 50 × 3h 15m</div>
       <div class="tot-pb"><div class="tot-pf" id="totF"></div></div>
     </div>
   </div>
@@ -1098,11 +1366,18 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
 
 <!-- SETTINGS MODAL -->
 <div class="settings-overlay" id="settingsModal">
-  <div class="settings-box">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--purple);text-transform:uppercase;">⚙️ Challenge Settings</div>
-      <button onclick="closeSettings()" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;">✕</button>
+  <div class="settings-box" style="display:flex;flex-direction:column;max-height:90vh;">
+    <!-- Sticky header with save button always visible -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);flex-shrink:0;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--purple);text-transform:uppercase;">⚙️ Settings</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button onclick="closeSettings();goToday()" style="padding:8px 14px;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.4);border-radius:7px;color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;">🏠 DASHBOARD</button>
+        <button onclick="saveSettings()" style="padding:8px 16px;background:var(--purple);border:none;border-radius:7px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;">✓ SAVE</button>
+        <button onclick="closeSettings()" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;">✕</button>
+      </div>
     </div>
+    <!-- Scrollable content -->
+    <div style="overflow-y:auto;flex:1;padding-right:4px;">
     <!-- Danger zone -->
     <div onclick="askNuclearClear()" style="background:rgba(255,59,92,.12);border:1.5px solid rgba(255,59,92,.4);border-radius:10px;padding:13px 16px;margin-bottom:18px;cursor:pointer;display:flex;align-items:center;gap:12px;">
       <div style="font-size:22px;flex-shrink:0;">🧹</div>
@@ -1117,7 +1392,7 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
     </div>
     <div style="margin-bottom:16px;">
       <label class="settings-lbl">Challenge Length (Days)</label>
-      <input type="number" id="set-days" min="30" max="365" class="settings-input" placeholder="100">
+      <input type="number" id="set-days" min="30" max="365" class="settings-input" placeholder="50">
     </div>
     <div style="margin-bottom:16px;">
       <label class="settings-lbl">Challenge Name</label>
@@ -1139,10 +1414,12 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
       <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);">✏️ Customise Tasks</div>
       <div id="taskEditorList" style="display:flex;flex-direction:column;gap:10px;"></div>
     </div>
-    <div style="display:flex;gap:10px;">
+    <!-- Bottom save -->
+    <div style="display:flex;gap:10px;padding-top:10px;border-top:1px solid var(--border);">
       <button onclick="saveSettings()" style="flex:1;padding:12px;background:var(--purple);border:none;border-radius:7px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;">✓ SAVE SETTINGS</button>
       <button onclick="closeSettings()" style="padding:12px 16px;background:transparent;border:1px solid var(--border);border-radius:7px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;">Cancel</button>
     </div>
+    </div><!-- /scrollable -->
   </div>
 </div>
 
@@ -1150,6 +1427,13 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
 <div class="toast" id="toast"></div>
 <script>
 'use strict';
+window.onerror = function(msg, src, line, col, err) {
+  var info = (err && err.stack) ? err.stack : (msg + ' [' + line + ':' + col + ']');
+  console.error('APP ERROR:', info);
+  var t = document.getElementById('toast');
+  if (t) { t.textContent = 'Error: ' + msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 4000); }
+  return false;
+};
 /* ═══════════════════════════════════════════════════════════
    50K CHALLENGE -- CORE ENGINE
    Fixed: timer persistence, streak calc, day nav display,
@@ -1158,7 +1442,7 @@ body.day-mode .totbox { background:#F0F4FA; border-color:rgba(200,122,0,.3); }
 
 // ── CONSTANTS & STATE ──────────────────────────────────────
 var CHALLENGE_START = new Date('2026-03-10T00:00:00');
-var CHALLENGE_DAYS  = 100;
+var CHALLENGE_DAYS  = 50;
 var DAILY_TARGET    = 195; // minutes
 
 var day     = 1;       // currently viewed day
@@ -1170,13 +1454,13 @@ var _confirmCallback = null;
 
 // ── TASK CONFIG ─────────────────────────────────────────────
 var TASK_DEFAULTS = {
-  med: { name:'Meditation',               sub:'15 min · Silence & Breath',            mins:15 },
-  phy: { name:'Physical Activity',        sub:'30 min · Move · Win the morning',       mins:30 },
-  aff: { name:'Affirmations + Gratitude', sub:'5 affirmations · Speak 2× · 3 gratitudes', mins:0 },
-  pod: { name:'Morning Podcast',          sub:'40 min · One episode · Metro / Home',  mins:40 },
+  med: { name:'Meditation',               sub:'Silence & Breath',                      mins:15 },
+  phy: { name:'Physical Activity',        sub:'Move · Win the morning',                mins:30 },
+  aff: { name:'Affirmations + Gratitude', sub:'6 affirmations · Speak 2× · 3 gratitudes', mins:0 },
+  pod: { name:'Morning Podcast',          sub:'One episode · Metro / Home',            mins:40 },
   trd: { name:'Paper Trades 1 + 2',       sub:'Max loss ₹100 each · Full journal',    mins:0  },
-  pat: { name:'Trade Pattern Study',      sub:'30 min · One pattern · Office / Metro',mins:30 },
-  dip: { name:'Health Diploma',           sub:'40 min · Evening study',               mins:40 },
+  pat: { name:'Trade Pattern Study',      sub:'One pattern · Office / Metro',          mins:30 },
+  dip: { name:'Health Diploma',           sub:'Evening study',                         mins:40 },
   ngt: { name:'Night Rituals',            sub:'5 habits · Prepare · Reflect · Rest',  mins:0  }
 };
 var TASK_CONFIG = {}; // loaded from storage or defaults
@@ -1210,8 +1494,20 @@ function loadSettings() {
   } catch(e){}
   try {
     var tc = JSON.parse(lsGet('50k_task_config') || 'null');
-    if (tc) TASK_CONFIG = tc;
-    else    TASK_CONFIG = JSON.parse(JSON.stringify(TASK_DEFAULTS));
+    if (tc) {
+      // Migrate: strip "X min" from subtitle if timer task (it's auto-added by timer)
+      Object.keys(tc).forEach(function(id) {
+        var def = TASK_DEFAULTS[id];
+        if (def && def.mins > 0 && tc[id].sub) {
+          tc[id].sub = tc[id].sub.split(' · ')
+            .map(function(p){ return p.trim(); })
+            .filter(function(p){ return !/^\d+\s*min$/i.test(p) && p.indexOf('Day ') !== 0 && p !== 'Day'; })
+            .join(' · ');
+        }
+      });
+      TASK_CONFIG = tc;
+    }
+    else TASK_CONFIG = JSON.parse(JSON.stringify(TASK_DEFAULTS));
   } catch(e) {
     TASK_CONFIG = JSON.parse(JSON.stringify(TASK_DEFAULTS));
   }
@@ -1305,14 +1601,27 @@ function scheduleSave() {
   }, 800);
 }
 function attachAutoSave() {
-  document.querySelectorAll('input,textarea,select').forEach(function(el) {
-    el.addEventListener('input',  scheduleSave);
-    el.addEventListener('change', scheduleSave);
+  // Use event delegation on document so dynamically added fields are covered too
+  document.addEventListener('input',  function(e) {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+      // Don't trigger saveDay for settings editor fields (te- prefix)
+      if (e.target.id && e.target.id.indexOf('te-') === 0) return;
+      if (e.target.id && e.target.id.indexOf('set-') === 0) return;
+      scheduleSave();
+    }
+  });
+  document.addEventListener('change', function(e) {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) {
+      if (e.target.id && e.target.id.indexOf('te-') === 0) return;
+      if (e.target.id && e.target.id.indexOf('set-') === 0) return;
+      scheduleSave();
+    }
   });
 }
 
 // ── SAVE / LOAD DAY ──────────────────────────────────────────
 function saveDay() {
+  try {
   var data = {};
   document.querySelectorAll('[id^="f-"]').forEach(function(e) { data[e.id] = e.value; });
   data._dm      = Object.assign({}, doneMap);
@@ -1320,8 +1629,8 @@ function saveDay() {
   document.querySelectorAll('.clist .ci').forEach(function(ci) {
     data._cks.push(ci.classList.contains('ck'));
   });
-  data._r1      = document.getElementById('rb1').classList.contains('rd');
-  data._r2      = document.getElementById('rb2').classList.contains('rd');
+  var rb1el = document.getElementById('rb1'); data._r1 = rb1el ? rb1el.classList.contains('rd') : false;
+  var rb2el = document.getElementById('rb2'); data._r2 = rb2el ? rb2el.classList.contains('rd') : false;
   data._vbt     = getVbTicks();
   data._timerElapsed = {}; // persist timer elapsed seconds per task
   ['med','phy','pod','pat','dip'].forEach(function(id) {
@@ -1334,8 +1643,10 @@ function saveDay() {
   if (el && ts) {
     el.textContent = '✓ ' + ts.toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'});
   }
+  } catch(e) { console.warn('saveDay error:', e); }
 }
 
+function quickSave() { saveDay(); toast('Saved!'); }
 function loadDay() {
   // Stop any running timers (don't lose elapsed -- save first if needed)
   Object.keys(timState).forEach(function(id) {
@@ -1428,6 +1739,12 @@ function loadDay() {
   updHdr();
   buildGrid();
   calcPnl(1); calcPnl(2);
+
+  // Restore direction button visuals
+  [1,2].forEach(function(n) {
+    var dir = ((document.getElementById('f-t'+n+'dir')||{}).value||'');
+    if (dir) setDir(n, dir);
+  });
 
   // Past day banner
   var today   = getTodayDay();
@@ -1588,14 +1905,30 @@ function setSumTab(tab, btn) {
   updSummary();
 }
 
+// Calculate total P&L from saved day data (returns null if no trades, number otherwise)
+function calcPnlTotal(data) {
+  if (!data) return null;
+  var total = null;
+  [1,2].forEach(function(n) {
+    var en  = parseFloat((data['f-t'+n+'en']||'').replace(/[^0-9.-]/g,''));
+    var ex  = parseFloat((data['f-t'+n+'ex']||'').replace(/[^0-9.-]/g,''));
+    var qty = parseFloat((data['f-t'+n+'qty']||'1').replace(/[^0-9.]/g,'')) || 1;
+    var dir = data['f-t'+n+'dir'] || '';
+    if (!isNaN(en) && !isNaN(ex) && dir) {
+      var pnl = dir === 'bear' ? (en - ex) * qty : (ex - en) * qty;
+      total = (total || 0) + Math.round(pnl * 100) / 100;
+    }
+  });
+  return total;
+}
+
 function updSummary() {
   var today = getTodayDay();
   var dur   = getDurations();
   var fmtM  = fmtMins;
 
   if (_sumTab === 'today') {
-    // Live today data
-    var ids = ['med','phy','pod','pat','dip'];
+    var ids = ['med','phy','pod','pat'];
     var total = 0;
     ids.forEach(function(id) {
       var elapsed = Math.round(getElapsed(id) / 60);
@@ -1607,9 +1940,23 @@ function updSummary() {
     var trdMin = doneMap['trd'] ? 60 : 0;
     var sTrd = document.getElementById('s-trd'); if (sTrd) sTrd.textContent = fmtM(trdMin);
     total += trdMin;
+
+    // Tasks done
     var sDays = document.getElementById('s-days'); if (sDays) sDays.textContent = Object.values(doneMap).filter(Boolean).length;
-    var sTrades = document.getElementById('s-trades'); if (sTrades) sTrades.textContent = '--';
-    var sNotes = document.getElementById('s-notes'); if (sNotes) sNotes.textContent = '--';
+    var sDaysLbl = document.getElementById('s-days-lbl'); if (sDaysLbl) sDaysLbl.textContent = 'Tasks Done';
+
+    // P&L today — sum both trades
+    var td = lsLoad(getTodayDay()) || {};
+    var pnl = calcPnlTotal(td);
+    var sPnl = document.getElementById('s-pnl');
+    if (sPnl) { sPnl.textContent = pnl === null ? '--' : (pnl >= 0 ? '+₹'+pnl : '-₹'+Math.abs(pnl)); sPnl.style.color = pnl === null ? '' : (pnl >= 0 ? 'var(--green)' : '#ef4444'); }
+
+    // Wake / Sleep today
+    var wakeToday  = td['f-wake']  || '--';
+    var sleepToday = td['f-sleep'] || '--';
+    var sWake  = document.getElementById('s-wake');  if (sWake)  sWake.textContent  = wakeToday;
+    var sSleep = document.getElementById('s-sleep'); if (sSleep) sSleep.textContent = sleepToday;
+
     var pt = document.getElementById('prodT'); if (pt) pt.textContent = fmtM(total);
     var tv = document.getElementById('totV'); if (tv) tv.textContent = fmtM(calcTotalMinutes());
     var tf = document.getElementById('totF');
@@ -1620,33 +1967,50 @@ function updSummary() {
   var fromDay = 1, toDay = today;
   if (_sumTab === 'week') fromDay = Math.max(1, today - 6);
 
-  var totals = { med:0, phy:0, pod:0, trd:0, pat:0, dip:0 };
-  var daysDone = 0, tradeCount = 0, noteCount = 0;
+  var totals = { med:0, phy:0, pod:0, trd:0, pat:0 };
+  var daysDone = 0, totalPnl = 0, pnlDays = 0;
+  var wakeList = [], sleepList = [];
 
   for (var d = fromDay; d <= toDay; d++) {
-    var data = (d === today) ? { _dm: doneMap } : lsLoad(d);
+    var data = (d === today) ? lsLoad(d) || { _dm: doneMap } : lsLoad(d);
     if (!data) continue;
     var dm = data._dm || {};
     if (dm.med) totals.med += dur.med;
     if (dm.phy) totals.phy += dur.phy;
     if (dm.pod) totals.pod += dur.pod;
-    if (dm.trd) { totals.trd += 60; tradeCount += ((data['f-t1en']||data['f-t1s'])?1:0) + ((data['f-t2en']||data['f-t2s'])?1:0); }
+    if (dm.trd) totals.trd += 60;
     if (dm.pat) totals.pat += dur.pat;
-    if (dm.dip) totals.dip += dur.dip;
     var tasksDone = Object.values(dm).filter(Boolean).length;
     if (tasksDone >= 4) daysDone++;
-    ['f-med-n','f-phy-n','f-pod-k','f-pat-k','f-dip-k','f-g1','f-imp1'].forEach(function(k){
-      if (data[k] && data[k].trim()) noteCount++;
-    });
+    // P&L
+    var dp = calcPnlTotal(data);
+    if (dp !== null) { totalPnl += dp; pnlDays++; }
+    // Wake / Sleep
+    if (data['f-wake'])  wakeList.push(data['f-wake']);
+    if (data['f-sleep']) sleepList.push(data['f-sleep']);
   }
 
   Object.keys(totals).forEach(function(id) {
     var el = document.getElementById('s-' + id);
     if (el) el.textContent = fmtM(totals[id]);
   });
+
   var sDays2 = document.getElementById('s-days'); if (sDays2) sDays2.textContent = daysDone;
-  var sTr2 = document.getElementById('s-trades'); if (sTr2) sTr2.textContent = tradeCount;
-  var sN2 = document.getElementById('s-notes'); if (sN2) sN2.textContent = noteCount;
+  var sDaysLbl2 = document.getElementById('s-days-lbl'); if (sDaysLbl2) sDaysLbl2.textContent = 'Days Done';
+
+  // P&L total
+  var sPnl2 = document.getElementById('s-pnl');
+  if (sPnl2) {
+    if (pnlDays === 0) { sPnl2.textContent = '--'; sPnl2.style.color = ''; }
+    else { sPnl2.textContent = (totalPnl >= 0 ? '+₹' : '-₹') + Math.abs(totalPnl); sPnl2.style.color = totalPnl >= 0 ? 'var(--green)' : '#ef4444'; }
+  }
+
+  // Avg wake / sleep (last entry as proxy — times don't average numerically simply)
+  var sWake2  = document.getElementById('s-wake');
+  var sSleep2 = document.getElementById('s-sleep');
+  if (sWake2)  sWake2.textContent  = wakeList.length  ? wakeList[wakeList.length-1]   + (wakeList.length  > 1 ? ' ('+wakeList.length+'d)'  : '') : '--';
+  if (sSleep2) sSleep2.textContent = sleepList.length ? sleepList[sleepList.length-1] + (sleepList.length > 1 ? ' ('+sleepList.length+'d)' : '') : '--';
+
   var total2 = Object.values(totals).reduce(function(a,b){ return a+b; }, 0);
   var tv2 = document.getElementById('totV'); if (tv2) tv2.textContent = fmtM(total2);
   var tf2 = document.getElementById('totF');
@@ -1785,9 +2149,16 @@ function ck(el) {
 function rep(n) {
   var btn = document.getElementById('rb' + n);
   if (!btn) return;
-  btn.classList.add('rd');
-  btn.textContent = '✓ Round ' + n + ' Done';
-  toast('Round ' + n + ' spoken! 💪');
+  var isDone = btn.classList.contains('rd');
+  if (isDone) {
+    btn.classList.remove('rd');
+    btn.textContent = n === 1 ? '☀️ Morning -- Read & Feel' : '🌙 Evening -- Read & Feel';
+    toast('Round ' + n + ' undone');
+  } else {
+    btn.classList.add('rd');
+    btn.textContent = '✓ Round ' + n + ' Done';
+    toast('Round ' + n + ' spoken! 💪');
+  }
   scheduleSave();
 }
 
@@ -1939,20 +2310,116 @@ function tR(id) {
   if (bar) bar.style.width = '0%';
 }
 
+// ── TRADE DIRECTION SELECTOR ─────────────────────────────────
+function setDir(n, dir) {
+  var dirInput = document.getElementById('f-t'+n+'dir');
+  if (dirInput) dirInput.value = dir;
+  // Update placeholders based on direction
+  var ph = dir === 'bull'
+    ? {en:'56700', sl:'56600', tg:'56900', ex:'56900'}
+    : {en:'56700', sl:'56800', tg:'56500', ex:'56500'};
+  ['en','sl','tg','ex'].forEach(function(k){
+    var inp = document.getElementById('f-t'+n+k);
+    if (inp) {
+      var span = inp.nextElementSibling;
+      if (span && span.classList.contains('ghost-ph')) span.textContent = ph[k];
+    }
+  });
+  var setupField = document.getElementById('f-t'+n+'s');
+  if (setupField) {
+    var label = dir === 'bull' ? 'Bullish' : 'Bearish';
+    var cur = setupField.value.trim();
+    if (!cur || cur === 'Bullish' || cur === 'Bearish' || cur === 'Bullish -- ' || cur === 'Bearish -- ') {
+      // Empty or just the direction word -- replace entirely
+      setupField.value = label + ' -- ';
+    } else if (/^(Bullish|Bearish)/i.test(cur)) {
+      // Starts with a direction word -- replace just that word
+      setupField.value = label + cur.replace(/^(Bullish|Bearish)\s*--?\s*/i, ' -- ').trimEnd();
+    }
+    // If field has custom text not starting with direction, don't touch it
+  }
+  // Update button styles
+  var bull = document.getElementById('f-t'+n+'dir-bull');
+  var bear = document.getElementById('f-t'+n+'dir-bear');
+  if (bull && bear) {
+    if (dir === 'bull') {
+      bull.style.background = 'rgba(46,204,138,.3)';
+      bull.style.borderColor = '#2ECC8A';
+      bull.style.opacity = '1';
+      bear.style.background = 'rgba(255,59,92,.05)';
+      bear.style.borderColor = 'rgba(255,59,92,.2)';
+      bear.style.opacity = '0.5';
+    } else {
+      bear.style.background = 'rgba(255,59,92,.3)';
+      bear.style.borderColor = '#FF3B5C';
+      bear.style.opacity = '1';
+      bull.style.background = 'rgba(46,204,138,.05)';
+      bull.style.borderColor = 'rgba(46,204,138,.2)';
+      bull.style.opacity = '0.5';
+    }
+  }
+  calcPnl(n);
+}
+
 // ── P&L CALCULATOR ───────────────────────────────────────────
 function calcPnl(n) {
   var en  = parseFloat(((document.getElementById('f-t'+n+'en')||{}).value||'').replace(/[^0-9.-]/g,''));
   var ex  = parseFloat(((document.getElementById('f-t'+n+'ex')||{}).value||'').replace(/[^0-9.-]/g,''));
+  var sl  = parseFloat(((document.getElementById('f-t'+n+'sl')||{}).value||'').replace(/[^0-9.-]/g,''));
+  var tg  = parseFloat(((document.getElementById('f-t'+n+'tg')||{}).value||'').replace(/[^0-9.-]/g,''));
   var qty = parseFloat(((document.getElementById('f-t'+n+'qty')||{}).value||'1').replace(/[^0-9.]/g,'')) || 1;
+  var dir = ((document.getElementById('f-t'+n+'dir')||{}).value||'');
   var box = document.getElementById('pnl' + n);
   if (!box) return;
-  if (isNaN(en) || isNaN(ex)) { box.textContent = '--'; box.style.color = 'var(--muted)'; }
-  else {
-    var raw   = (ex - en) * qty;
+
+  // SL/Target validation warning
+  var slField = document.getElementById('f-t'+n+'sl');
+  var tgField = document.getElementById('f-t'+n+'tg');
+  if (dir && !isNaN(en)) {
+    if (dir === 'bull') {
+      // Bullish: SL must be BELOW entry, Target must be ABOVE entry
+      if (slField) slField.style.borderColor = (!isNaN(sl) && sl >= en) ? '#FF3B5C' : '';
+      if (tgField) tgField.style.borderColor = (!isNaN(tg) && tg <= en) ? '#FF3B5C' : '';
+      if (slField && !isNaN(sl)) slField.title = sl >= en ? '⚠️ Bullish SL must be BELOW entry price' : '';
+      if (tgField && !isNaN(tg)) tgField.title = tg <= en ? '⚠️ Bullish Target must be ABOVE entry price' : '';
+    } else {
+      // Bearish: SL must be ABOVE entry, Target must be BELOW entry
+      if (slField) slField.style.borderColor = (!isNaN(sl) && sl <= en) ? '#FF3B5C' : '';
+      if (tgField) tgField.style.borderColor = (!isNaN(tg) && tg >= en) ? '#FF3B5C' : '';
+      if (slField && !isNaN(sl)) slField.title = sl <= en ? '⚠️ Bearish SL must be ABOVE entry price' : '';
+      if (tgField && !isNaN(tg)) tgField.title = tg >= en ? '⚠️ Bearish Target must be BELOW entry price' : '';
+    }
+  } else {
+    if (slField) { slField.style.borderColor = ''; slField.title = ''; }
+    if (tgField) { tgField.style.borderColor = ''; tgField.title = ''; }
+  }
+  // Only show P&L when ALL required fields are filled
+  var sl2  = parseFloat(((document.getElementById('f-t'+n+'sl')||{}).value||'').replace(/[^0-9.-]/g,''));
+  var tg2  = parseFloat(((document.getElementById('f-t'+n+'tg')||{}).value||'').replace(/[^0-9.-]/g,''));
+  var allFilled = !isNaN(en) && !isNaN(ex) && !isNaN(sl2) && !isNaN(tg2) && dir !== '';
+  // Also block if SL/Target are wrong side for direction
+  var validSetup = true;
+  if (allFilled && dir === 'bull' && (sl2 >= en || tg2 <= en)) validSetup = false;
+  if (allFilled && dir === 'bear' && (sl2 <= en || tg2 >= en)) validSetup = false;
+  if (!allFilled || !validSetup) {
+    box.textContent = !allFilled ? '--' : '⚠️ Fix SL / Target';
+    box.style.color = !allFilled ? 'var(--muted)' : '#FF3B5C';
+    box.style.fontSize = '13px';
+  } else {
+    // Bearish: profit = entry - exit (shorted, price goes down)
+    // Bullish: profit = exit - entry (bought, price goes up)
+    var raw = dir === 'bear' ? (en - ex) * qty : (ex - en) * qty;
     var sign  = raw >= 0 ? '+' : '';
     var color = raw > 0 ? '#2ECC8A' : raw < 0 ? '#FF3B5C' : 'var(--gold)';
-    box.textContent = sign + '₹' + raw.toLocaleString('en-IN',{maximumFractionDigits:2});
+    var label = dir === 'bear' ? ' (Bearish)' : dir === 'bull' ? ' (Bullish)' : '';
+    box.textContent = sign + '₹' + Math.abs(raw).toLocaleString('en-IN',{maximumFractionDigits:2}) + (raw >= 0 ? ' PROFIT' : ' LOSS') + label;
     box.style.color = color;
+    box.style.fontSize = '14px';
+    // Auto-set result dropdown
+    var resSel = document.getElementById('f-t'+n+'r');
+    if (resSel && (resSel.value === '' || resSel.value !== 'be')) {
+      resSel.value = raw > 0 ? 'win' : raw < 0 ? 'loss' : 'be';
+    }
   }
   updateDayTotal();
 }
@@ -1962,8 +2429,9 @@ function updateDayTotal() {
     var en  = parseFloat(((document.getElementById('f-t'+n+'en')||{}).value||'').replace(/[^0-9.-]/g,''));
     var ex  = parseFloat(((document.getElementById('f-t'+n+'ex')||{}).value||'').replace(/[^0-9.-]/g,''));
     var qty = parseFloat(((document.getElementById('f-t'+n+'qty')||{}).value||'1').replace(/[^0-9.]/g,'')) || 1;
+    var dir = ((document.getElementById('f-t'+n+'dir')||{}).value||'');
     if (isNaN(en) || isNaN(ex)) return null;
-    return (ex - en) * qty;
+    return dir === 'bear' ? (en - ex) * qty : (ex - en) * qty;
   };
   var p1 = getPnl(1), p2 = getPnl(2);
   var box = document.getElementById('dayPnlBox');
@@ -2007,11 +2475,31 @@ function confirmCancel() {
 
 // ── THEME TOGGLE ─────────────────────────────────────────────
 var _isDayMode = false;
+var _themeManual = false; // true if user has manually overridden auto theme
+
+function _isNaturalDay() {
+  var h = new Date().getHours();
+  return h >= 6 && h < 20; // 6am to 8pm = day mode
+}
+
+function _applyTheme(isDay, updateBtn) {
+  _isDayMode = isDay;
+  document.body.classList.toggle('day-mode', isDay);
+  var btn = document.getElementById('themeBtn');
+  if (btn) btn.textContent = isDay ? '🌙 Night' : '☀️ Day';
+}
+
 function toggleTheme() {
-  _isDayMode = !_isDayMode;
-  document.body.classList.toggle('day-mode', _isDayMode);
-  document.getElementById('themeBtn').textContent = _isDayMode ? '🌙 Night' : '☀️ Day';
-  lsSet('50k_theme', _isDayMode ? 'day' : 'night');
+  _themeManual = true; // user override -- stop auto for this session
+  _applyTheme(!_isDayMode);
+  lsSet('50k_theme_manual', _isDayMode ? 'day' : 'night');
+}
+
+function _autoThemeTick() {
+  if (!_themeManual) {
+    var shouldBeDay = _isNaturalDay();
+    if (shouldBeDay !== _isDayMode) _applyTheme(shouldBeDay);
+  }
 }
 
 // ── SETTINGS ─────────────────────────────────────────────────
@@ -2033,32 +2521,271 @@ function closeSettings() {
 }
 
 function renderTaskEditor() {
-  var list  = document.getElementById('taskEditorList');
+  var list = document.getElementById('taskEditorList');
   if (!list) return;
   var icons = {med:'🧘',phy:'🏀',aff:'🌟',pod:'🎧',trd:'📊',pat:'🔬',dip:'🎓',ngt:'🌙'};
-  var hasMins = ['med','phy','pod','pat','dip'];
+  var keys  = Object.keys(TASK_CONFIG);
   list.innerHTML = '';
-  Object.keys(TASK_DEFAULTS).forEach(function(id) {
-    var cfg = TASK_CONFIG[id] || TASK_DEFAULTS[id];
-    var minsHtml = hasMins.indexOf(id) !== -1 ?
-      '<div style="display:flex;align-items:center;gap:6px;margin-top:6px;">' +
-      '<span style="font-family:JetBrains Mono,monospace;font-size:10px;color:var(--muted);">⏱ MINS</span>' +
-      '<input type="number" id="te-mins-'+id+'" value="'+cfg.mins+'" min="1" max="240" style="width:60px;background:var(--bg);border:1px solid var(--border2);border-radius:4px;color:var(--gold);font-family:JetBrains Mono,monospace;font-size:12px;padding:4px 8px;text-align:center;"></div>' : '';
-    list.innerHTML +=
-      '<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">' +
-      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">' +
-      '<span style="font-size:14px;">' + icons[id] + '</span>' +
-      '<span style="font-family:JetBrains Mono,monospace;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">' + id + '</span></div>' +
-      '<input type="text" id="te-name-'+id+'" value="'+cfg.name+'" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:JetBrains Mono,monospace;font-size:12px;padding:6px 10px;box-sizing:border-box;margin-bottom:4px;">' +
-      '<input type="text" id="te-sub-'+id+'" value="'+cfg.sub+'" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;color:var(--muted);font-family:JetBrains Mono,monospace;font-size:11px;padding:5px 10px;box-sizing:border-box;">' +
-      minsHtml + '</div>';
+
+  keys.forEach(function(id) {
+    var cfg      = TASK_CONFIG[id];
+    var hasTimer = (cfg.mins || 0) > 0;
+    var iconHtml = icons[id] || '📌';
+
+    // Timer section
+    var timerSection =
+      '<div id="te-timer-'+id+'" style="margin-top:8px;padding:8px 10px;' +
+      'background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.2);border-radius:6px;' +
+      (hasTimer ? '' : 'display:none') + '">' +
+        '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+          '<span style="font-family:JetBrains Mono,monospace;font-size:10px;color:var(--gold);letter-spacing:1px;">⏱ TIMER TARGET</span>' +
+          '<div style="display:flex;align-items:center;gap:4px;">' +
+            '<button onclick="teAdjMins(\''+id+'\',-5)" style="'+_teBtnStyle()+'">-5</button>' +
+            '<button onclick="teAdjMins(\''+id+'\',-1)" style="'+_teBtnStyle()+'">-1</button>' +
+            '<input type="number" id="te-mins-'+id+'" value="'+(cfg.mins||30)+'" min="0" max="240" ' +
+              'style="width:54px;background:var(--bg);border:1px solid var(--border2);border-radius:4px;' +
+              'color:var(--gold);font-family:JetBrains Mono,monospace;font-size:13px;font-weight:700;padding:4px 6px;text-align:center;">' +
+            '<button onclick="teAdjMins(\''+id+'\',1)"  style="'+_teBtnStyle(true)+'">+1</button>' +
+            '<button onclick="teAdjMins(\''+id+'\',5)"  style="'+_teBtnStyle(true)+'">+5</button>' +
+            '<span style="font-family:JetBrains Mono,monospace;font-size:10px;color:var(--muted);">min</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    // Timer toggle button (inside card)
+    var timerToggle =
+      '<button id="te-tmrbtn-'+id+'" onclick="teToggleTimer(\''+id+'\')" ' +
+        'style="font-family:JetBrains Mono,monospace;font-size:10px;letter-spacing:0.5px;padding:4px 8px;border-radius:5px;cursor:pointer;' +
+        (hasTimer
+          ? 'background:rgba(46,204,138,.15);border:1px solid rgba(46,204,138,.4);color:#2ECC8A;'
+          : 'background:rgba(100,100,100,.1);border:1px solid var(--border2);color:var(--muted);') +
+      '">⏱ '+(hasTimer ? 'TIMER ON' : 'TIMER OFF')+'</button>';
+
+    // The task card (no delete inside -- it's below)
+    var cardHtml =
+      '<div id="te-row-'+id+'" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">' +
+        '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap;">' +
+          '<span style="font-size:15px;">'+iconHtml+'</span>' +
+          '<span style="font-family:JetBrains Mono,monospace;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;flex:1;">'+id+'</span>' +
+          timerToggle +
+        '</div>' +
+        '<input type="text" id="te-name-'+id+'" value="'+_esc(cfg.name)+'" placeholder="Task name" ' +
+          'style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;' +
+          'color:var(--text);font-family:JetBrains Mono,monospace;font-size:12px;padding:7px 10px;box-sizing:border-box;margin-bottom:6px;">' +
+        // Multi-row subtitle editor
+        '<div id="te-subs-'+id+'">' + _buildSubRows(id, cfg.sub) + '</div>' +
+        timerSection +
+      '</div>';
+
+    // ── + and − pill buttons clearly below each card ──
+    var btnBase = 'font-family:JetBrains Mono,monospace;font-size:16px;font-weight:900;' +
+      'width:40px;height:32px;border-radius:20px;cursor:pointer;line-height:1;' +
+      'display:inline-flex;align-items:center;justify-content:center;';
+    var actionRow =
+      '<div style="display:flex;gap:8px;justify-content:center;align-items:center;' +
+        'padding:6px 0 10px;border-bottom:1px solid var(--border);">' +
+        '<button onclick="deleteTask(\''+id+'\')" title="Delete this task" ' +
+          'style="'+btnBase+'background:rgba(230,57,70,.15);border:1.5px solid rgba(230,57,70,.5);color:#FF3B5C;">−</button>' +
+        '<span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--muted);letter-spacing:1px;">'+id.toUpperCase()+'</span>' +
+        '<button onclick="addCustomTask(\''+id+'\')" title="Add new task below" ' +
+          'style="'+btnBase+'background:rgba(46,204,138,.15);border:1.5px solid rgba(46,204,138,.5);color:#2ECC8A;">+</button>' +
+      '</div>';
+
+    list.innerHTML += cardHtml + actionRow;
   });
+
+  // Final "+ ADD NEW TASK" at very bottom if list is empty
+  if (keys.length === 0) {
+    list.innerHTML =
+      '<div style="text-align:center;padding:20px;color:var(--muted);font-family:JetBrains Mono,monospace;font-size:12px;">No tasks. Tap + to add one.</div>';
+  }
+  // Always show one more + at the bottom
+  list.innerHTML +=
+    '<button onclick="addCustomTask()" ' +
+      'style="width:100%;padding:11px;background:rgba(139,92,246,.1);border:1.5px dashed rgba(139,92,246,.4);' +
+      'border-radius:8px;color:var(--purple);font-family:JetBrains Mono,monospace;font-size:12px;' +
+      'cursor:pointer;letter-spacing:1px;margin-top:2px;">+ ADD NEW TASK</button>';
 }
 
+// Helper: escape for HTML attribute values
+function _esc(s) { return String(s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+// Render subtitle string as separate lines (split on ' · ')
+function _subToHtml(sub) {
+  if (!sub) return '';
+  var parts = sub.split(' · ').map(function(s){ return s.trim(); }).filter(Boolean);
+  if (parts.length <= 1) return sub; // single line, no change
+  return parts.map(function(p){ return '<span class="sub-line">' + p + '</span>'; }).join('');
+}
+
+// Helper: small +/- button style
+function _teBtnStyle(isPlus) {
+  var base = 'font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;width:32px;height:28px;' +
+    'border-radius:4px;cursor:pointer;line-height:1;';
+  return isPlus
+    ? base + 'background:rgba(46,204,138,.15);border:1px solid rgba(46,204,138,.4);color:#2ECC8A;'
+    : base + 'background:rgba(230,57,70,.12);border:1px solid rgba(230,57,70,.3);color:#FF6B7A;';
+}
+
+// Build subtitle rows HTML for a task
+// sub is stored as "part1 · part2 · part3" -- split into individual editable lines
+// For tasks with a timer, the first "X min" part is auto-generated -- skip it in editor
+function _buildSubRows(id, sub) {
+  var cfg = TASK_CONFIG[id] || TASK_DEFAULTS[id] || {};
+  var parts = sub ? sub.split(' · ').map(function(s){ return s.trim(); }).filter(function(p){ return p !== ''; }) : [''];
+  // If task has timer, filter out any "X min" parts -- timer controls that
+  if (cfg.mins > 0) {
+    parts = parts.filter(function(p){ return !/^\d+\s*min$/i.test(p.trim()); });
+  }
+  // Filter out Day counter parts
+  parts = parts.filter(function(p){ return p.indexOf('Day ') !== 0 && p !== 'Day'; });
+  if (parts.length === 0) parts = [''];
+  var html = '';
+  parts.forEach(function(part, i) {
+    html += _subRowHtml(id, i, part, parts.length);
+  });
+  return html;
+}
+
+function _subRowHtml(id, i, val, total) {
+  var inputStyle = 'flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;' +
+    'color:var(--muted);font-family:JetBrains Mono,monospace;font-size:11px;padding:5px 8px;min-width:0;';
+  var minusBtn = total > 1
+    ? '<button onclick="teRemoveSubRow(\''+id+'\','+i+')" style="'+_teBtnStyle(false)+';width:26px;height:26px;flex-shrink:0;">−</button>'
+    : '<button disabled style="'+_teBtnStyle(false)+';width:26px;height:26px;flex-shrink:0;opacity:0.25;">−</button>';
+  // + on every row -- inserts a new row after this one
+  var plusBtn = '<button onclick="teInsertSubRow(\''+id+'\','+i+')" style="'+_teBtnStyle(true)+';width:26px;height:26px;flex-shrink:0;">+</button>';
+  return '<div id="te-subrow-'+id+'-'+i+'" style="display:flex;gap:4px;align-items:center;margin-bottom:3px;">' +
+    minusBtn +
+    '<input type="text" id="te-sub-'+id+'-'+i+'" value="'+(val==='—'?'':_esc(val))+'" placeholder="Info line '+(i+1)+'" style="'+inputStyle+'">' +
+    plusBtn +
+  '</div>';
+}
+
+// Add a new subtitle row at the end
+function teAddSubRow(id) {
+  teInsertSubRow(id, _getSubParts(id).length - 1);
+}
+
+// Insert a new subtitle row after index i
+function teInsertSubRow(id, afterIdx) {
+  var parts = _getSubParts(id);
+  parts.splice(afterIdx + 1, 0, '');
+  _refreshSubRows(id, parts);
+  setTimeout(function() {
+    var el = document.getElementById('te-sub-' + id + '-' + (afterIdx + 1));
+    if (el) el.focus();
+  }, 30);
+}
+
+// Remove a subtitle row by index
+function teRemoveSubRow(id, idx) {
+  var parts = _getSubParts(id);
+  if (parts.length <= 1) return;
+  parts.splice(idx, 1);
+  _refreshSubRows(id, parts);
+}
+
+// Read current subtitle row values from DOM
+function _getSubParts(id) {
+  var parts = [], i = 0;
+  while (true) {
+    var el = document.getElementById('te-sub-' + id + '-' + i);
+    if (!el) break;
+    parts.push(el.value);
+    i++;
+  }
+  return parts;
+}
+
+// Re-render the subtitle rows container
+function _refreshSubRows(id, parts) {
+  var container = document.getElementById('te-subs-' + id);
+  if (!container) return;
+  var html = '';
+  parts.forEach(function(part, i) {
+    html += _subRowHtml(id, i, part, parts.length);
+  });
+  container.innerHTML = html;
+}
+
+// Toggle timer section visibility
+function teToggleTimer(id) {
+  var section = document.getElementById('te-timer-' + id);
+  var btn     = document.getElementById('te-tmrbtn-' + id);
+  var minsEl  = document.getElementById('te-mins-' + id);
+  if (!section) return;
+  var showing = section.style.display !== 'none';
+  if (showing) {
+    section.style.display = 'none';
+    // Set mins to 0 to signal no timer
+    if (minsEl) minsEl.value = '0';
+    if (btn) { btn.textContent = '⏱ ADD TIMER'; btn.style.background='rgba(100,100,100,.1)'; btn.style.borderColor='var(--border2)'; btn.style.color='var(--muted)'; }
+  } else {
+    section.style.display = 'block';
+    if (minsEl && (parseInt(minsEl.value)||0) < 1) minsEl.value = '30';
+    if (btn) { btn.textContent = '⏱ TIMER ON'; btn.style.background='rgba(46,204,138,.15)'; btn.style.borderColor='rgba(46,204,138,.4)'; btn.style.color='#2ECC8A'; }
+  }
+}
+
+// Adjust mins with +/- buttons
+function teAdjMins(id, delta) {
+  var el = document.getElementById('te-mins-' + id);
+  if (!el) return;
+  var val = Math.max(1, Math.min(240, (parseInt(el.value)||30) + delta));
+  el.value = val;
+}
+
+function deleteTask(id) {
+  var taskName = (TASK_CONFIG[id] || TASK_DEFAULTS[id] || {name: id}).name;
+  askConfirm(
+    'Remove "' + taskName + '"?',
+    'This task will no longer appear in the tracker. Your past data is kept safe.',
+    function() {
+      delete TASK_CONFIG[id];
+      renderTaskEditor();
+      toast('Task removed -- tap Save Settings to apply');
+    }
+  );
+}
+
+function addCustomTask(afterId) {
+  var newId = 'task' + Date.now().toString().slice(-4);
+  TASK_CONFIG[newId] = { name: 'New Task', sub: 'Describe your task', mins: 0 };
+  // If afterId given, reorder TASK_CONFIG to insert after that key
+  if (afterId) {
+    var keys = Object.keys(TASK_CONFIG);
+    var reordered = {};
+    keys.forEach(function(k) {
+      if (k !== newId) reordered[k] = TASK_CONFIG[k];
+      if (k === afterId) reordered[newId] = TASK_CONFIG[newId];
+    });
+    TASK_CONFIG = reordered;
+  }
+  renderTaskEditor();
+  setTimeout(function() {
+    var el = document.getElementById('te-name-' + newId);
+    if (el) { el.focus(); el.select(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  }, 60);
+}
+
+// Parts shown in subtitle header per task (lowercase for matching)
+var standardPartsForDisplay = {
+  med: ['silence & breath', 'how do you feel today?'],
+  phy: ['move', 'win the morning'],
+  pod: ['one episode', 'metro / home'],
+  pat: ['one pattern', 'office / metro'],
+  dip: ['evening study'],
+  aff: ['6 affirmations', 'speak 2×', 'speak 2x', '3 gratitudes'], ngt: ['5 habits', 'prepare', 'reflect', 'rest', 'visualise'], trd: []
+};
+
 function applyTaskConfig() {
+  try {
+  // Update existing default task cards
   Object.keys(TASK_DEFAULTS).forEach(function(id) {
     var cfg = TASK_CONFIG[id] || TASK_DEFAULTS[id];
-    // Update card title
+
+    // 1. Update title
     var titleEl = document.querySelector('#rc-' + id + ' .rc-title');
     if (titleEl) {
       var tagEl = titleEl.querySelector('.tag');
@@ -2066,21 +2793,187 @@ function applyTaskConfig() {
         var tn = titleEl.firstChild;
         if (tn && tn.nodeType === 3) tn.textContent = cfg.name + ' ';
         else titleEl.insertBefore(document.createTextNode(cfg.name + ' '), tagEl);
-      } else {
-        titleEl.textContent = cfg.name;
-      }
+      } else { titleEl.textContent = cfg.name; }
     }
-    // Update subtitle
+
+    // 2. Update subtitle -- show ONLY standard parts, not extra injected ones
     var subEl = document.querySelector('#rc-' + id + ' .rc-sub');
-    if (subEl && !subEl.querySelector('.db')) subEl.textContent = cfg.sub;
-    // Update timer label
+    if (subEl) {
+      var dbOld = subEl.querySelector('.db');
+      var dbVal = dbOld ? dbOld.textContent : String(day || 1);
+      var parts  = cfg.sub ? cfg.sub.split(' · ').map(function(s){ return s.trim(); }).filter(Boolean) : [];
+      parts = parts.filter(function(p){ return !/^\d+\s*min$/i.test(p); });
+      // Only show standard known parts in header subtitle
+      var knownStd = (standardPartsForDisplay[id] || []);
+      var headerParts = parts.filter(function(p){
+        if (p.indexOf('Day ') === 0 || p === 'Day' || p === '—') return false;
+        if (knownStd.length > 0) return knownStd.indexOf(p.toLowerCase()) !== -1;
+        return true;
+      });
+      var displayParts = cfg.mins > 0 ? [cfg.mins + ' min'].concat(headerParts) : headerParts;
+      var subHtml = displayParts.map(function(p){ return _esc(p); }).join(' · ');
+      if (id === 'med') {
+        subHtml += (subHtml ? ' · ' : '') + 'Day <span class="db">' + dbVal + '</span>/' + CHALLENGE_DAYS;
+      }
+      subEl.innerHTML = subHtml;
+    }
+
+    // 3. Inject extra subtitle rows into card body for any custom parts added by user
+    // Standard built-in parts per task (already have dedicated UI)
+    var standardParts = {
+      med: ['silence & breath', 'how do you feel today?', 'silence & breath · how do you feel today?'],
+      phy: ['move', 'win the morning', 'activity', 'activity note'],
+      aff: ['6 affirmations', 'speak 2×', 'speak 2x', '3 gratitudes'], ngt: ['5 habits', 'prepare', 'reflect', 'rest', 'visualise'], trd: [],
+      pod: ['one episode', 'metro / home', 'podcast name'],
+      pat: ['one pattern', 'office / metro'],
+      dip: ['evening study']
+    };
+    try {
+      var body = document.querySelector('#rc-' + id + ' .rc-body');
+      if (body) {
+        // Remove existing injected rows
+        body.querySelectorAll('.injected-rows').forEach(function(el){ el.parentNode.removeChild(el); });
+
+        var allParts = (cfg.sub ? cfg.sub.split(' · ').map(function(s){ return s.trim(); }).filter(Boolean) : [])
+          .filter(function(p){
+            return p.indexOf('Day ') !== 0 && p !== 'Day' && !/^\d+\s*min$/i.test(p);
+          });
+
+        // For default tasks: only inject parts NOT in the standard list
+        var knownParts = standardParts[id] || [];
+        var extraParts = allParts.filter(function(p){
+          return knownParts.indexOf(p.toLowerCase()) === -1;
+        });
+
+        // For custom tasks: inject all parts
+        var rowParts = (id in standardParts) ? extraParts : allParts;
+
+        if (rowParts.length > 0) {
+          var rowsDiv = document.createElement('div');
+          rowsDiv.className = 'injected-rows fl';
+          rowsDiv.style.marginBottom = '10px';
+          rowParts.forEach(function(label, i) {
+            var wrap = document.createElement('div');
+            wrap.style.marginBottom = '10px';
+            // Editable row title
+            var titleInp = document.createElement('input');
+            titleInp.type = 'text';
+            titleInp.className = 'fi';
+            titleInp.id = 'f-' + id + '-rt' + i;
+            titleInp.value = label;
+            titleInp.placeholder = 'Field title...';
+            titleInp.style.cssText = 'width:100%;box-sizing:border-box;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;color:var(--muted);background:transparent;border:none;border-bottom:1px dashed var(--border2);padding:2px 0;';
+            // Value input
+            var inp = document.createElement('input');
+            inp.type = 'text';
+            inp.className = 'fi';
+            inp.id = 'f-' + id + '-r' + i;
+            inp.placeholder = label + '...';
+            inp.style.cssText = 'width:100%;box-sizing:border-box;';
+            wrap.appendChild(titleInp);
+            wrap.appendChild(inp);
+            rowsDiv.appendChild(wrap);
+          });
+          // Insert before first .fl or before .sbtn
+          var firstFl = body.querySelector('.fl');
+          if (firstFl && firstFl.parentNode === body) {
+            body.insertBefore(rowsDiv, firstFl);
+          } else {
+            var sbtn = body.querySelector('.sbtn');
+            if (sbtn && sbtn.parentNode === body) body.insertBefore(rowsDiv, sbtn);
+            else body.appendChild(rowsDiv);
+          }
+        }
+      }
+    } catch(injErr) { console.warn('Row inject error for ' + id + ':', injErr); }
+
+    // 4. Update timer label
     var tlEl = document.getElementById('tl-' + id);
     if (tlEl && cfg.mins) tlEl.textContent = 'Target -- ' + cfg.mins + ' minutes';
-    // Update button default
     BTN_DEFAULT[id] = '✓ Mark ' + cfg.name + ' Complete';
   });
   BTN_DEFAULT['trd'] = '✓ Both Trades Logged';
   BTN_DEFAULT['ngt'] = '✓ Night Rituals Complete -- Rest Well 🌙';
+
+  // Inject custom task cards (not in TASK_DEFAULTS)
+  var customSection = document.getElementById('custom-tasks-section');
+  if (!customSection) {
+    customSection = document.createElement('div');
+    customSection.id = 'custom-tasks-section';
+    // Insert before night rituals section or at end of task list
+    var ngtCard = document.getElementById('rc-ngt');
+    var parent  = ngtCard ? ngtCard.parentNode : document.getElementById('taskList');
+    if (ngtCard) parent.insertBefore(customSection, ngtCard);
+    else if (parent) parent.appendChild(customSection);
+  }
+  customSection.innerHTML = '';
+
+  Object.keys(TASK_CONFIG).forEach(function(id) {
+    if (TASK_DEFAULTS[id]) return;
+    var cfg = TASK_CONFIG[id];
+    BTN_DEFAULT[id] = '✓ Mark ' + cfg.name + ' Complete';
+
+    var card = document.createElement('div');
+    card.className = 'rc co';
+    card.id = 'rc-' + id;
+
+    // Timer row
+    var timerHtml = cfg.mins > 0
+      ? '<div class="trow"><div class="tbar">' +
+          '<span class="tnum" id="t-'+id+'">'+(cfg.mins)+':00</span>' +
+          '<div class="tbars">' +
+            '<div class="tbar-lbl" id="tl-'+id+'">Target -- '+cfg.mins+' minutes</div>' +
+            '<div class="tprog"><div class="tprog-f" id="tb-'+id+'" style="width:0%"></div></div>' +
+          '</div>' +
+          '<div class="tbtns">' +
+            '<button class="tbtn ts" onclick="tS(\''+id+'\')">▶ Start</button>' +
+            '<button class="tbtn tp" onclick="tP(\''+id+'\')">■ Stop</button>' +
+            '<button class="tbtn tbtn-r" onclick="tR(\''+id+'\')">↺</button>' +
+          '</div>' +
+        '</div></div>'
+      : '';
+
+    // Build subtitle row inputs inside card body
+    var subParts = cfg.sub ? cfg.sub.split(' · ').map(function(s){ return s.trim(); }).filter(Boolean) : [];
+    var rowInputsHtml = '';
+    if (subParts.length > 0) {
+      rowInputsHtml = '<div class="fl" style="margin-bottom:10px;">' +
+        subParts.map(function(label, i) {
+          return '<div style="margin-bottom:6px;">' +
+            '<label style="font-size:10px;color:var(--muted);font-family:JetBrains Mono,monospace;letter-spacing:0.5px;display:block;margin-bottom:3px;">' + label + '</label>' +
+            '<input type="text" class="fi" id="f-'+id+'-r'+i+'" placeholder="'+_esc(label)+'..." ' +
+              'style="width:100%;box-sizing:border-box;">' +
+          '</div>';
+        }).join('') +
+      '</div>';
+    }
+
+    card.innerHTML =
+      '<div class="rc-hdr" onclick="tog(\''+id+'\')">' +
+        '<div class="rc-ico">📌</div>' +
+        '<div class="rc-meta">' +
+          '<div class="rc-title">'+cfg.name+'</div>' +
+          (subParts.length > 0
+            ? '<div class="rc-sub">'+subParts.length+' item'+(subParts.length>1?'s':'')+' to fill</div>'
+            : '') +
+        '</div>' +
+        '<div class="rc-r"><div class="arr">▼</div></div>' +
+      '</div>' +
+      '<div class="rc-body">' +
+        timerHtml +
+        rowInputsHtml +
+        '<div class="fl"><label>Notes</label>' +
+          '<textarea class="fta" id="f-'+id+'-n" placeholder="Your notes for today..."></textarea>' +
+        '</div>' +
+        '<button class="sbtn" id="btn-'+id+'" onclick="done(\''+id+'\')">✓ Mark '+_esc(cfg.name)+' Complete</button>' +
+      '</div>';
+
+    customSection.appendChild(card);
+    if (cfg.mins > 0 && !timState[id]) {
+      timState[id] = { tg: cfg.mins * 60, elapsedAtPause: 0, startWall: 0, running: false };
+    }
+  });
+  } catch(e) { console.warn('applyTaskConfig error:', e); }
 }
 
 function saveSettings() {
@@ -2090,16 +2983,22 @@ function saveSettings() {
   var targetVal = parseInt(document.getElementById('set-target').value)  || 195;
   if (!startVal) { toast('⚠️ Please set a start date'); return; }
 
-  // Save task config from editor (single pass -- no duplicate logic)
-  var hasMins = ['med','phy','pod','pat','dip'];
-  Object.keys(TASK_DEFAULTS).forEach(function(id) {
+  // Save task config from editor -- covers default AND custom tasks
+  Object.keys(TASK_CONFIG).forEach(function(id) {
     var nameEl = document.getElementById('te-name-' + id);
-    var subEl  = document.getElementById('te-sub-'  + id);
     var minsEl = document.getElementById('te-mins-' + id);
+    var fallback = TASK_DEFAULTS[id] || { name: id, sub: '', mins: 0 };
+    // Collect multi-row subtitles
+    var subParts = _getSubParts(id);
+    var subVal = subParts.map(function(s){ return s.trim() || '—'; }).filter(function(s){ return s !== ''; }).join(' · ');
+    var mins = minsEl ? (parseInt(minsEl.value) || 0) : (fallback.mins || 0);
+    // For timer tasks, prepend "X min" automatically to subtitle
+    if (mins > 0 && subVal) subVal = mins + ' min · ' + subVal;
+    else if (mins > 0)      subVal = mins + ' min';
     TASK_CONFIG[id] = {
-      name: (nameEl && nameEl.value.trim()) || TASK_DEFAULTS[id].name,
-      sub:  (subEl  && subEl.value.trim())  || TASK_DEFAULTS[id].sub,
-      mins: (minsEl && hasMins.indexOf(id) !== -1) ? (parseInt(minsEl.value) || TASK_DEFAULTS[id].mins) : TASK_DEFAULTS[id].mins
+      name: (nameEl && nameEl.value.trim()) || fallback.name,
+      sub:  subVal || fallback.sub,
+      mins: mins
     };
   });
   lsSet('50k_task_config', JSON.stringify(TASK_CONFIG));
@@ -2241,18 +3140,51 @@ function buildLogBody(d, data, dm) {
   if (!data) return '<div style="padding:8px;color:var(--muted);font-size:11px">No data recorded.</div>';
   var html = '';
   var f = function(label, val) { return '<div class="log-field"><div class="lbl">'+label+'</div><div class="val">'+eh(val)+'</div></div>'; };
+
+  // Helper: show all injected row fields for a task (f-{id}-r0, r1, r2...)
+  var fRows = function(id) {
+    var cfg = TASK_CONFIG[id] || TASK_DEFAULTS[id];
+    if (!cfg) return;
+    var knownStd = standardPartsForDisplay[id] || [];
+    var parts = cfg.sub ? cfg.sub.split(' · ').map(function(s){ return s.trim(); }).filter(function(p){
+      return p.indexOf('Day ') !== 0 && !/^\d+\s*min$/i.test(p) && knownStd.indexOf(p.toLowerCase()) === -1;
+    }) : [];
+    parts.forEach(function(defaultLabel, i) {
+      var title = lv(data, 'f-'+id+'-rt'+i) || (defaultLabel === '—' ? '' : defaultLabel);
+      var val   = lv(data, 'f-'+id+'-r'+i);
+      // Always show if row exists (even title and val both blank)
+      if (defaultLabel) {
+        html += '<div class="log-field"><div class="lbl">'+(title ? eh(title) : '<span style="color:var(--muted);font-style:italic;">Untitled field</span>')+'</div><div class="val">'+(val ? eh(val) : '<span style="color:var(--muted);font-style:italic;">—</span>')+'</div></div>';
+      }
+    });
+  };
+
+  // Meditation
+  fRows('med');
   if (lv(data,'f-med-n')) html += f('🧘 Meditation Note', lv(data,'f-med-n'));
+  // Physical
+  fRows('phy');
   if (lv(data,'f-phy-a')||lv(data,'f-phy-n')) html += f('🏀 Physical', (lv(data,'f-phy-a')||'')+(lv(data,'f-phy-n')?' -- '+lv(data,'f-phy-n'):''));
   if (lv(data,'f-pod-n')||lv(data,'f-pod-k')) html += f('🎧 Podcast', (lv(data,'f-pod-n')||'')+(lv(data,'f-pod-k')?' · '+lv(data,'f-pod-k'):''));
+  fRows('pod');
   [1,2].forEach(function(n) {
     var en=lv(data,'f-t'+n+'en'),ex=lv(data,'f-t'+n+'ex'),s=lv(data,'f-t'+n+'s'),
         sl=lv(data,'f-t'+n+'sl'),tg=lv(data,'f-t'+n+'tg'),
+        qty=parseFloat(lv(data,'f-t'+n+'qty'))||1,
+        dir=lv(data,'f-t'+n+'dir'),
         g=lv(data,'f-t'+n+'gd'),b=lv(data,'f-t'+n+'bd'),l=lv(data,'f-t'+n+'ln');
     if (en||s) {
-      var diff = (parseFloat(ex)||0)-(parseFloat(en)||0);
-      var rc   = diff>0?'#2ECC8A':diff<0?'#FF3B5C':'#4A6278';
+      var enV=parseFloat(en)||0, exV=parseFloat(ex)||0;
+      // Use direction for P&L calculation
+      var raw = dir==='bear' ? (enV-exV)*qty : (exV-enV)*qty;
+      var hasCalc = ex && en && dir;
+      var rc = hasCalc ? (raw>0?'#2ECC8A':raw<0?'#FF3B5C':'#4A6278') : '#4A6278';
+      var resultLabel = hasCalc ? (raw>0?'WIN ↑':raw<0?'LOSS ↓':'B/E') : (lv(data,'f-t'+n+'r')==='win'?'WIN ↑':lv(data,'f-t'+n+'r')==='loss'?'LOSS ↓':'--');
+      var pnlStr = hasCalc ? (raw>=0?'+':'')+'\u20b9'+Math.abs(raw).toLocaleString('en-IN',{maximumFractionDigits:2})+' '+(raw>=0?'PROFIT':'LOSS') : '';
+      var dirLabel = dir==='bull'?' (Bullish)':dir==='bear'?' (Bearish)':'';
       html += '<div class="log-trade"><div class="log-trade-title">TRADE '+n+
-        '<span style="color:'+rc+'">'+(diff>0?'WIN ↑':diff<0?'LOSS ↓':'--')+'</span></div>'+
+        '<span style="color:'+rc+'">'+resultLabel+'</span></div>'+
+        (pnlStr?'<div style="font-family:\'JetBrains Mono\',monospace;font-size:14px;font-weight:700;color:'+rc+';margin-bottom:8px;">'+pnlStr+dirLabel+'</div>':'')+
         '<div class="log-grid">'+
         (en?'<div class="log-field"><div class="lbl">Entry</div><div class="val">'+eh(en)+'</div></div>':'')+
         (ex?'<div class="log-field"><div class="lbl">Exit</div><div class="val" style="color:'+rc+'">'+eh(ex)+'</div></div>':'')+
@@ -2267,7 +3199,9 @@ function buildLogBody(d, data, dm) {
     }
   });
   if (lv(data,'f-pat-n')||lv(data,'f-pat-k')) html += f('🔬 Pattern', (lv(data,'f-pat-n')||'')+(lv(data,'f-pat-k')?' -- '+lv(data,'f-pat-k'):''));
+  fRows('pat');
   if (lv(data,'f-dip-n')||lv(data,'f-dip-k')) html += f('🎓 Diploma', (lv(data,'f-dip-n')||'')+(lv(data,'f-dip-k')?' -- '+lv(data,'f-dip-k'):''));
+  fRows('dip');
   var gs = [lv(data,'f-g1'),lv(data,'f-g2'),lv(data,'f-g3')].filter(Boolean);
   if (gs.length) html += f('🙏 Gratitudes', gs.map(function(x,i){ return (i+1)+'. '+x; }).join('\n'));
   var im = [lv(data,'f-imp1'),lv(data,'f-imp2'),lv(data,'f-imp3')].filter(Boolean);
@@ -2275,15 +3209,38 @@ function buildLogBody(d, data, dm) {
   var co = [lv(data,'f-comp1'),lv(data,'f-comp2')].filter(Boolean);
   if (co.length) html += f('🤝 Complimented', co.join(' · '));
   if (lv(data,'f-tmrw'))  html += f('🎯 Tomorrow Priority', lv(data,'f-tmrw'));
-  if (lv(data,'f-sleep')) html += '<div style="margin-top:6px;font-size:12px;color:var(--muted)">😴 Sleep: '+eh(lv(data,'f-sleep'))+'</div>';
+  // Wake + Sleep times
+  var wakeVal  = lv(data,'f-wake');
+  var sleepVal = lv(data,'f-sleep');
+  if (wakeVal || sleepVal) {
+    html += '<div style="display:flex;gap:10px;margin-top:6px;">';
+    if (wakeVal)  html += '<div style="flex:1;background:var(--bg3);border-radius:8px;padding:8px 10px;"><div style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;">⏰ Wake Up</div><div style="font-size:13px;font-weight:700;color:var(--green)">'+eh(wakeVal)+'</div></div>';
+    if (sleepVal) html += '<div style="flex:1;background:var(--bg3);border-radius:8px;padding:8px 10px;"><div style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;">😴 Sleep</div><div style="font-size:13px;font-weight:700;color:var(--purple)">'+eh(sleepVal)+'</div></div>';
+    html += '</div>';
+  }
+  // Avg wake + sleep across all logged days
+  var wakes = [], sleeps = [];
+  for (var ad = 1; ad <= CHALLENGE_DAYS; ad++) {
+    var ad_data = lsLoad(ad);
+    if (ad_data) {
+      if (lv(ad_data,'f-wake'))  wakes.push(lv(ad_data,'f-wake'));
+      if (lv(ad_data,'f-sleep')) sleeps.push(lv(ad_data,'f-sleep'));
+    }
+  }
+  if (wakes.length > 1 || sleeps.length > 1) {
+    html += '<div style="margin-top:6px;font-size:9px;color:var(--muted);letter-spacing:1px;text-align:center;">';
+    if (wakes.length  > 0) html += '⏰ Avg wake: <strong style="color:var(--text)">'+wakes[wakes.length-1]+'</strong> &nbsp;·&nbsp; ';
+    if (sleeps.length > 0) html += '😴 Avg sleep: <strong style="color:var(--text)">'+sleeps[sleeps.length-1]+'</strong>';
+    html += ' &nbsp;('+Math.max(wakes.length,sleeps.length)+' days logged)</div>';
+  }
   return html || '<div style="color:var(--muted);font-size:11px;padding:4px">No notes filled in.</div>';
 }
 
 function toggleLog(hdr) {
-  var body = hdr.nextElementSibling;
+  var row  = hdr.parentNode;
   var arr  = hdr.querySelector('span:last-child');
-  var open = body.classList.contains('open');
-  body.classList.toggle('open', !open);
+  var open = row.classList.contains('open');
+  row.classList.toggle('open', !open);
   if (arr) arr.textContent = open ? '▼' : '▲';
 }
 
@@ -2297,7 +3254,7 @@ function downloadAll() {
     'Pattern','Pattern Insight','Diploma Module','Diploma Concept',
     'Gratitude 1','Gratitude 2','Gratitude 3',
     'Improve 1','Improve 2','Improve 3',
-    'Compliment 1','Compliment 2','Tomorrow Priority','Sleep Time']];
+    'Compliment 1','Compliment 2','Tomorrow Priority','Wake Time','Sleep Time']];
   for (var d = 1; d <= CHALLENGE_DAYS; d++) {
     var data = lsLoad(d);
     var dm   = data && data._dm ? data._dm : {};
@@ -2309,7 +3266,7 @@ function downloadAll() {
       lv(data,'f-pat-n'), lv(data,'f-pat-k'), lv(data,'f-dip-n'), lv(data,'f-dip-k'),
       lv(data,'f-g1'), lv(data,'f-g2'), lv(data,'f-g3'),
       lv(data,'f-imp1'), lv(data,'f-imp2'), lv(data,'f-imp3'),
-      lv(data,'f-comp1'), lv(data,'f-comp2'), lv(data,'f-tmrw'), lv(data,'f-sleep')
+      lv(data,'f-comp1'), lv(data,'f-comp2'), lv(data,'f-tmrw'), lv(data,'f-wake'), lv(data,'f-sleep')
     ]);
   }
   var csv  = rows.map(function(r){ return r.map(function(c){ return '"'+String(c||'').replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
@@ -2327,13 +3284,28 @@ function downloadAll() {
   loadSettings();
   day = getTodayDay();
 
-  // Apply saved theme
-  var savedTheme = lsGet('50k_theme');
-  if (savedTheme === 'day') {
-    _isDayMode = true;
-    document.body.classList.add('day-mode');
-    document.getElementById('themeBtn').textContent = '🌙 Night';
+  // Auto theme based on time of day (6am-8pm = light, 8pm-6am = dark)
+  // Check if user has a manual override saved
+  var savedManual = lsGet('50k_theme_manual');
+  if (savedManual) {
+    _themeManual = true;
+    _applyTheme(savedManual === 'day');
+  } else {
+    _applyTheme(_isNaturalDay());
   }
+  // Auto-check theme every 5 minutes
+  setInterval(_autoThemeTick, 5 * 60 * 1000);
+  // Reset manual override at midnight so auto resumes next day
+  (function scheduleMidnightReset() {
+    var now = new Date();
+    var msToMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1) - now;
+    setTimeout(function() {
+      _themeManual = false;
+      lsSet('50k_theme_manual', '');
+      _applyTheme(_isNaturalDay());
+      scheduleMidnightReset();
+    }, msToMidnight);
+  })();
 
   // Apply brand from settings
   var s = {};
@@ -2351,15 +3323,291 @@ function downloadAll() {
   applyTaskConfig();
   loadDay();
   attachAutoSave();
+  setTimeout(initSplash, 50);
 
-  // Open meditation card by default on today
-  var medCard = document.getElementById('rc-med');
-  if (medCard && !doneMap['med']) medCard.classList.add('open');
+  // All cards start closed -- user opens them manually
 
   setTimeout(function() {
-    toast('📅 Day ' + day + ' of ' + CHALLENGE_DAYS + ' · ' + fmtDate(day));
+    // Only show if splash already gone
+    var sp = document.getElementById('splashScreen');
+    if (!sp || sp.style.display === 'none') {
+      toast('📅 Day ' + day + ' of ' + CHALLENGE_DAYS + ' · ' + fmtDate(day));
+    }
   }, 600);
 })();
+
+function saveTrade(n) {
+  saveDay();
+  updSummary();
+  buildGrid();
+  toast('Trade ' + n + ' saved ✓');
+}
+
+function clearTrade(n) {
+  var fields = ['en','sl','tg','ex','tm','qty','s','wh','gd','bd','ln'];
+  fields.forEach(function(f){ var el=document.getElementById('f-t'+n+f); if(el) el.value=''; });
+  var dirEl = document.getElementById('f-t'+n+'dir'); if(dirEl) dirEl.value='';
+  var res = document.getElementById('f-t'+n+'r'); if(res) res.value='';
+  // Reset direction buttons
+  var bull=document.getElementById('f-t'+n+'dir-bull');
+  var bear=document.getElementById('f-t'+n+'dir-bear');
+  if(bull){ bull.style.background='rgba(46,204,138,.08)'; bull.style.borderColor='rgba(46,204,138,.4)'; bull.style.opacity='1'; }
+  if(bear){ bear.style.background='rgba(255,59,92,.08)'; bear.style.borderColor='rgba(255,59,92,.4)'; bear.style.opacity='1'; }
+  // Reset SL/Target border
+  var slF=document.getElementById('f-t'+n+'sl'); if(slF) slF.style.borderColor='';
+  var tgF=document.getElementById('f-t'+n+'tg'); if(tgF) tgF.style.borderColor='';
+  var pnl=document.getElementById('pnl'+n); if(pnl){ pnl.textContent='--'; pnl.style.color='var(--muted)'; pnl.style.fontSize='18px'; }
+  saveDay(); updSummary(); buildGrid();
+}
+
+// ── SPLASH SCREEN ──────────────────────────────────────────────
+var SPLASH_MESSAGES = [
+  // Day 1-7: ignition
+  ['50 days left to change your life.', 'It starts right now. No warm-up.'],
+  ['49 days left to transform your life.', 'Day 1 is behind you. Keep going.'],
+  ['48 days left to build your empire.', 'The man who shows up wins.'],
+  ['47 days left to become unrecognisable.', 'Your daughter is watching.'],
+  ['46 days left to earn your identity.', 'Discipline is just kept promises.'],
+  ['45 days left to own your morning.', '5:30 AM is your competitive edge.'],
+  ['44 days left to silence the doubt.', 'One week down. Forty-three to go.'],
+  // Day 8-14: momentum
+  ['43 days left to master the market.', 'Study the patterns. Trust the process.'],
+  ['42 days left to build the streak.', 'Habits don\'t break themselves — people do.'],
+  ['41 days left to upgrade your mind.', 'What you feed grows. Feed discipline.'],
+  ['40 days left to sharpen the edge.', 'No phone till 2 PM. Your best ideas live there.'],
+  ['39 days left to prove the vision.', 'The vision board is not decoration.'],
+  ['38 days left to stack the wins.', 'Small wins compound like interest.'],
+  ['37 days left to claim the life.', 'Two weeks of proof. Keep stacking.'],
+  // Day 15-21: identity shift
+  ['36 days left to lock in the habits.', 'This is who you are now.'],
+  ['35 days left to become the example.', 'The father your daughter will describe.'],
+  ['34 days left to trade with clarity.', 'Calm mind. Precise entry. Patient exit.'],
+  ['33 days left to own the process.', 'Results follow systems. Trust yours.'],
+  ['32 days left to close the gap.', 'Between who you are and who you promised.'],
+  ['31 days left to build the life.', 'Dream home. Royal Enfield. Free mornings.'],
+  ['30 days left to prove it to yourself.', 'Three weeks clean. Identity is shifting.'],
+  // Day 22-30: halfway push
+  ['29 days left to go all in.', 'The second half decides everything.'],
+  ['28 days left to finish what you started.', 'Quitters never make it here.'],
+  ['27 days left to sharpen your trading.', 'Pattern + patience = profit.'],
+  ['26 days left to protect the streak.', 'Every day you show up, the bar rises.'],
+  ['25 days left to hit halfway.', 'You have already done half the work.'],
+  ['24 days left to push past comfort.', 'Where you are uncomfortable is where you grow.'],
+  ['23 days left to build the legend.', 'Not for others. For the man in the mirror.'],
+  ['22 days left to lock the discipline.', 'No washroom. No office. No shortcuts.'],
+  ['21 days left to reach the milestone.', 'Day 30 is three away. Do not blink.'],
+  // Day 31-40: deep work
+  ['20 days left to go elite.', 'Top 1% is a daily decision, not a destination.'],
+  ['19 days left to finish strong.', 'Most people quit here. You are not most people.'],
+  ['18 days left to own the morning.', 'The sun is your alarm. Answer it.'],
+  ['17 days left to trade with conviction.', 'Your journal knows the truth.'],
+  ['16 days left to secure the future.', 'Every minute logged is equity in your life.'],
+  ['15 days left to build the final stretch.', 'Two weeks. That is all that stands.'],
+  ['14 days left to become unstoppable.', 'When you want to stop — that is when it counts.'],
+  ['13 days left to cement the legacy.', 'Thirteen days between you and the man you will be.'],
+  ['12 days left to leave nothing on the table.', 'Full effort. Every habit. Every day.'],
+  ['11 days left to see the finish line.', 'You can see it from here. Run.'],
+  // Day 41-50: final push
+  ['10 days left to make it count.', 'Single digit days. Every one matters.'],
+  ['9 days left to write the story.', 'The ending you tell your daughter.'],
+  ['8 days left to go all in.', 'Eight days. Eight perfect days. That is the ask.'],
+  ['7 days left to reach the peak.', 'One final week. Your best week.'],
+  ['6 days left to finish like a champion.', 'Champions do not ease up near the end.'],
+  ['5 days left to honour your word.', 'You made a promise on Day 1. Keep it.'],
+  ['4 days left to cross the line.', 'Four sessions. Four perfect days. Go.'],
+  ['3 days left to make history.', 'Your personal history. The one that matters most.'],
+  ['2 days left to seal the deal.', 'Tomorrow is the last day before the last day.'],
+  ['1 day left to complete the mission.', 'One day. Everything you have. Leave nothing.'],
+];
+
+function initSplash() {
+  try {
+    var d = (typeof day !== 'undefined' && day > 0) ? day : 1;
+    var totalDays = (typeof CHALLENGE_DAYS !== 'undefined') ? CHALLENGE_DAYS : 50;
+    var daysLeft = Math.max(0, totalDays - d + 1);
+    var msgIdx = Math.min(d - 1, SPLASH_MESSAGES.length - 1);
+    var msg = SPLASH_MESSAGES[msgIdx] || [daysLeft + ' days left.', 'Keep going.'];
+
+    // Dynamic challenge title: "THE 49 DAYS CHALLENGE"
+    var titleEl = document.getElementById('splashChallengeTitle');
+    if (titleEl) titleEl.textContent = 'THE ' + daysLeft + ' DAYS CHALLENGE';
+
+    // Sub-quote line
+    var qEl  = document.getElementById('splashQuote');
+    var dbEl = document.getElementById('splashDayBadge');
+    if (qEl)  qEl.textContent  = msg[1];
+    if (dbEl) dbEl.textContent = 'Day ' + d + ' of ' + totalDays;
+
+    // Set streak — calculated same way as header
+    try {
+      var streakEl = document.getElementById('splashStreak');
+      if (streakEl) {
+        var today2 = getTodayDay();
+        var sc = 0;
+        var cf = (getDayStatus(today2) !== null) ? today2 : today2 - 1;
+        for (var sd = cf; sd >= 1; sd--) {
+          var ss = getDayStatus(sd);
+          if (ss === 'perfect' || ss === 'ok' || ss === 'part' || isDayFrozen(sd)) { sc++; } else { break; }
+        }
+        streakEl.textContent = sc;
+      }
+    } catch(e2){}
+
+    // Restore saved photo
+    try {
+      var savedPhoto = lsGet('50k_splash_photo');
+      if (savedPhoto) {
+        var img = document.getElementById('splashPhoto');
+        var em  = document.getElementById('splashEmoji');
+        var hint = document.getElementById('splashPhotoHint');
+        if (img) { img.src = savedPhoto; img.style.display = 'block'; }
+        if (em)  em.style.display = 'none';
+        if (hint) hint.style.display = 'none';
+        setTimeout(applySplashPhotoTransform, 80);
+        // Show edit overlay hint
+        var ov = document.getElementById('splashPhotoOverlay');
+        if (ov) { ov.style.opacity='1'; setTimeout(function(){ ov.style.opacity='0'; }, 2000); }
+      }
+    } catch(e3){}
+
+  } catch(e) {
+    // Fallback — just show default message if anything fails
+    try {
+      var titleFb = document.getElementById('splashChallengeTitle');
+      if (titleFb) titleFb.textContent = 'THE 50 DAYS CHALLENGE';
+      var qFb = document.getElementById('splashQuote');
+      if (qFb) qFb.textContent = 'It starts right now.';
+      var dbFb = document.getElementById('splashDayBadge');
+      if (dbFb) dbFb.textContent = 'Day 1 of 50';
+    } catch(e4){}
+  }
+}
+
+// ── PHOTO EDITOR ──────────────────────────────────────────────
+var _photoData = null; // current loaded base64
+
+function openPhotoEditor() {
+  var panel = document.getElementById('photoEditorPanel');
+  if (!panel) return;
+  panel.style.display = 'flex';
+  // Load saved settings into sliders
+  try {
+    var ps = JSON.parse(lsGet('50k_photo_settings') || '{}');
+    document.getElementById('photoZoom').value = ps.zoom || 100;
+    document.getElementById('photoX').value    = ps.x    || 0;
+    document.getElementById('photoY').value    = ps.y    || 0;
+  } catch(e){}
+  // Sync preview with current splash photo
+  var src = lsGet('50k_splash_photo');
+  if (src) {
+    var pi = document.getElementById('photoPreviewImg');
+    var pe = document.getElementById('photoPreviewEmoji');
+    pi.src = src; pi.style.display = 'block';
+    pe.style.display = 'none';
+    document.getElementById('photoDragHint').style.display = 'block';
+    applyPhotoTransform();
+  }
+}
+
+function closePhotoEditor() {
+  var panel = document.getElementById('photoEditorPanel');
+  if (panel) panel.style.display = 'none';
+}
+
+function applyPhotoTransform() {
+  var zoom = parseFloat(document.getElementById('photoZoom').value) / 100;
+  var x    = parseFloat(document.getElementById('photoX').value);
+  var y    = parseFloat(document.getElementById('photoY').value);
+  var t    = 'translate(-50%,-50%) translate('+x+'px,'+y+'px) scale('+zoom+')';
+  // Apply to preview
+  var pi = document.getElementById('photoPreviewImg');
+  if (pi) {
+    pi.style.left = '50%'; pi.style.top = '50%';
+    pi.style.width = '140px'; pi.style.height = '140px';
+    pi.style.objectFit = 'cover';
+    pi.style.transform = t;
+  }
+}
+
+function savePhotoSettings() {
+  var zoom = document.getElementById('photoZoom').value;
+  var x    = document.getElementById('photoX').value;
+  var y    = document.getElementById('photoY').value;
+  lsSet('50k_photo_settings', JSON.stringify({ zoom:zoom, x:x, y:y }));
+  // Apply to main splash photo
+  applySplashPhotoTransform();
+  closePhotoEditor();
+  // Show edit overlay hint
+  var ov = document.getElementById('splashPhotoOverlay');
+  if (ov) { ov.style.opacity = '1'; setTimeout(function(){ ov.style.opacity='0'; }, 1200); }
+  toast('✓ Photo saved!');
+}
+
+function applySplashPhotoTransform() {
+  try {
+    var ps = JSON.parse(lsGet('50k_photo_settings') || '{}');
+    var zoom = parseFloat(ps.zoom || 100) / 100;
+    var x    = parseFloat(ps.x || 0);
+    var y    = parseFloat(ps.y || 0);
+    var img  = document.getElementById('splashPhoto');
+    if (img && img.style.display !== 'none') {
+      img.style.left = '50%'; img.style.top = '50%';
+      img.style.width = '130px'; img.style.height = '130px';
+      img.style.objectFit = 'cover';
+      img.style.transform = 'translate(-50%,-50%) translate('+x+'px,'+y+'px) scale('+zoom+')';
+    }
+  } catch(e){}
+}
+
+function setSplashPhoto(input) {
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var data = e.target.result;
+    lsSet('50k_splash_photo', data);
+    // Show in main splash
+    var img = document.getElementById('splashPhoto');
+    var em  = document.getElementById('splashEmoji');
+    if (img) { img.src = data; img.style.display = 'block'; }
+    if (em)  em.style.display = 'none';
+    // Show in preview
+    var pi = document.getElementById('photoPreviewImg');
+    var pe = document.getElementById('photoPreviewEmoji');
+    if (pi) { pi.src = data; pi.style.display = 'block'; }
+    if (pe) pe.style.display = 'none';
+    document.getElementById('photoDragHint').style.display = 'block';
+    // Reset sliders for fresh photo
+    document.getElementById('photoZoom').value = 100;
+    document.getElementById('photoX').value    = 0;
+    document.getElementById('photoY').value    = 0;
+    applyPhotoTransform();
+    applySplashPhotoTransform();
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function removePhoto() {
+  lsSet('50k_splash_photo', '');
+  lsSet('50k_photo_settings', '{}');
+  var img = document.getElementById('splashPhoto');
+  var em  = document.getElementById('splashEmoji');
+  if (img) { img.src=''; img.style.display='none'; }
+  if (em)  em.style.display = 'block';
+  var pi = document.getElementById('photoPreviewImg');
+  var pe = document.getElementById('photoPreviewEmoji');
+  if (pi) { pi.src=''; pi.style.display='none'; }
+  if (pe) pe.style.display = 'flex';
+  closePhotoEditor();
+}
+
+function closeSplash() {
+  var s = document.getElementById('splashScreen');
+  if (!s) return;
+  s.style.opacity = '0';
+  s.style.transform = 'scale(1.04)';
+  setTimeout(function() { s.style.display = 'none'; }, 600);
+}
+
 </script>
 </body>
 </html>
